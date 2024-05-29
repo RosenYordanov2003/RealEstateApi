@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32922.545
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealEstate", "RealEstateApi\RealEstate.csproj", "{8333A098-9931-4F6A-8F68-6485E81DAB27}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealEstate", "RealEstateApi\RealEstate.csproj", "{8333A098-9931-4F6A-8F68-6485E81DAB27}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealEstate.Data", "RealEstate.Data\RealEstate.Data.csproj", "{4A6FE31F-1A52-4653-BF4F-8A67B7CEAB50}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealEstate.Data", "RealEstate.Data\RealEstate.Data.csproj", "{4A6FE31F-1A52-4653-BF4F-8A67B7CEAB50}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealEstate.GlobalConstants", "RealEstate.GlobalConstants\RealEstate.GlobalConstants.csproj", "{8C6ED03A-4433-42E8-994E-A4C75364FF42}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealEstate.GlobalConstants", "RealEstate.GlobalConstants\RealEstate.GlobalConstants.csproj", "{8C6ED03A-4433-42E8-994E-A4C75364FF42}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealEstate.Core", "RealEstate.Core\RealEstate.Core.csproj", "{C72D5D0B-2351-47AA-B9D2-B23C71062126}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{8C6ED03A-4433-42E8-994E-A4C75364FF42}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C6ED03A-4433-42E8-994E-A4C75364FF42}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C6ED03A-4433-42E8-994E-A4C75364FF42}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C72D5D0B-2351-47AA-B9D2-B23C71062126}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C72D5D0B-2351-47AA-B9D2-B23C71062126}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C72D5D0B-2351-47AA-B9D2-B23C71062126}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C72D5D0B-2351-47AA-B9D2-B23C71062126}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

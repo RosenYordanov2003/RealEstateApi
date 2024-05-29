@@ -22,13 +22,11 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Identity.Web" Version="1.16.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.15.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\RealEstate.Core\RealEstate.Core.csproj" />
     <ProjectReference Include="..\RealEstate.Data\RealEstate.Data.csproj" />
   </ItemGroup>
 
