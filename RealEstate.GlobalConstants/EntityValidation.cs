@@ -2,9 +2,13 @@
 {
     public static class EntityValidation
     {
-        public static class CategoryValidation
+        public static class SalesCategoryValidation
         {
             public const int NAME_MAX_LENGTH = 10;
+        }
+        public static class PropertyCategoryValidation
+        {
+            public const int NAME_MAX_LENGTH = 30;
         }
         public static class PropertyValidation
         {

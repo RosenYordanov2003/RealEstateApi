@@ -18,18 +18,23 @@
         public int BathRoomsCount { get; set; }
         public decimal Latitude { get; set; }
         public decimal Longitude { get; set; }
+        public decimal SquareMeters { get; set; }
         [Required]
         [MaxLength(NAME_MAX_LENGTH)]
         public string Name { get; set; } = null!;
 
         [ForeignKey(nameof(Category))]
         public int CategoryId { get; set; }
-        public Category Category { get; set; } = null!;
+        public SaleCategory Category { get; set; } = null!;
         public decimal Price { get; set; }
         [MaxLength(CITY_MAX_LENGTH)]
         public string City { get; set; } = null!;
         [MaxLength(ADDRESS_MAX_LENGTH)]
         public string Address { get; set; } = null!;
+
+        [ForeignKey(nameof(PropertyCategory))]
+        public int PropertyCategoryId { get; set; }
+        public PropertyCategory PropertyCategory { get; set; } = null!;
 
         [ForeignKey(nameof(Owner))]
         public Guid OwnerId { get; set; }

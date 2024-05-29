@@ -1,10 +1,10 @@
 ﻿namespace RealEstate.Data.Data.Models
 {
     using System.ComponentModel.DataAnnotations;
-    using static GlobalConstants.EntityValidation.CategoryValidation;
-    public class Category
+    using static GlobalConstants.EntityValidation.SalesCategoryValidation;
+    public class SaleCategory
     {
-        public Category()
+        public SaleCategory()
         {
             Properties = new HashSet<Property>();
         }
