@@ -1,4 +1,4 @@
-﻿namespace RealEstate.Responses
+﻿namespace RealEstate.Responses.Account
 {
     public class RegisterResponseModel
     {

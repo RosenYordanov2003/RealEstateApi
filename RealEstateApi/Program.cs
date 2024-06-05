@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Web;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using RealEstate.Data.Data;
 using RealEstate.Data.Data.Models;
 using System.Text;
@@ -16,21 +17,38 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 //Jwt configuration starts here
 
-var jwtIssuer = builder.Configuration.GetSection("Jwt:Issuer").Get<string>();
 var jwtKey = builder.Configuration.GetSection("Jwt:Key").Get<string>();
+var issuer = builder.Configuration.GetSection("Jwt:ValidIssuer").Get<string>();
+var aud = builder.Configuration.GetSection("Jwt:ValidAudience").Get<string>();
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+builder.Services.AddAuthentication(x =>
+{
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+})
  .AddJwtBearer(options =>
  {
+     options.IncludeErrorDetails = true;
+     options.RequireHttpsMetadata = false;
+     options.SaveToken = true;
      options.TokenValidationParameters = new TokenValidationParameters
      {
+         ValidIssuer = issuer,
+         ValidAudience = aud,
          ValidateIssuer = true,
          ValidateAudience = true,
-         ValidateLifetime = true,
          ValidateIssuerSigningKey = true,
-         ValidIssuer = jwtIssuer,
-         ValidAudience = jwtIssuer,
-         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+         ValidateLifetime = false,
+         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+     };
+     options.Events = new JwtBearerEvents
+     {
+         OnMessageReceived = context =>
+         {
+             context.Token = context.Request.Headers["Authorization"];
+             return Task.CompletedTask;
+         }
      };
  });
 
@@ -47,13 +65,59 @@ builder.Services.AddIdentity<User, IdentityRole<Guid>>(options =>
 })
   .AddEntityFrameworkStores<ApplicationDbContext>();
 // Add services to the container.
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("free", opt =>
+    {
+        opt.AllowAnyOrigin();
+        opt.AllowAnyHeader();
+        opt.AllowAnyMethod();
+    });
+});
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Events.OnRedirectToLogin = context =>
+    {
+        context.Response.StatusCode = 401;
+        return Task.CompletedTask;
+    };
+});
 
 builder.Services.AddControllers();
+builder.Services.AddAuthorization();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+//builder.Services.AddSwaggerGen();
+
+builder.Services.AddSwaggerGen(c => {
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "JWTToken_Auth_API",
+        Version = "v1"
+    });
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 1safsfsdfdfd\"",
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+        {
+            new OpenApiSecurityScheme {
+                Reference = new OpenApiReference {
+                    Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
 
 var app = builder.Build();
 
@@ -68,6 +132,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseCors("free");
 
 app.MapControllers();
 
