@@ -4,9 +4,9 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.IdentityModel.Tokens;
+    using Microsoft.OpenApi.Models;
     using Data.Data.Models;
     using Data.Data;
-    using Microsoft.OpenApi.Models;
 
     public static class ServiceCollectionExtensions
     {
@@ -88,6 +88,31 @@
                     new string[] {}
                 }
             });
+            });
+            return services;
+        }
+        public static IServiceCollection AddApplicationCookieConfiguration(this IServiceCollection services)
+        {
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.Events.OnRedirectToLogin = context =>
+                {
+                    context.Response.StatusCode = 401;
+                    return Task.CompletedTask;
+                };
+            });
+            return services;
+        }
+        public static IServiceCollection AddCorsConfiguration(this IServiceCollection services)
+        {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("free", opt =>
+                {
+                    opt.AllowAnyOrigin();
+                    opt.AllowAnyHeader();
+                    opt.AllowAnyMethod();
+                });
             });
             return services;
         }

@@ -1,16 +1,14 @@
 ﻿namespace RealEstate.Controllers
 {
-    using Microsoft.AspNetCore.Authorization;
+    using System.Text;
+    using System.Security.Claims;
+    using System.IdentityModel.Tokens.Jwt;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.IdentityModel.Tokens;
     using Responses.Account;
-    using System.IdentityModel.Tokens.Jwt;
-    using System.Text;
     using Data.Data.Models;
-    using RealEstate.Core.Models.Account;
-    using System.Security.Claims;
-    using Microsoft.AspNetCore.Authentication.JwtBearer;
+    using Core.Models.Account;
 
     [Route("api/account")]
     [ApiController]
@@ -88,7 +86,7 @@
 
             SecurityTokenDescriptor tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(await GetAllClaims(user)),
+                Subject = new ClaimsIdentity(await GetUserClaims(user)),
                 Expires = DateTime.UtcNow.AddMinutes(15),
                 Issuer = issuer,
                 Audience = aud,
@@ -100,7 +98,7 @@
 
             return jwtToken;
         }
-        private async Task<List<Claim>> GetAllClaims(User user)
+        private async Task<List<Claim>> GetUserClaims(User user)
         {
             var claims = new List<Claim>()
             {
@@ -122,15 +120,16 @@
 
             return claims;
         }
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [Route("test")]
-        [HttpGet]
-        public IActionResult Test()
-        {
-            var path = HttpContext.Request.Headers["Authorization"];
-            return Ok("Hello");
-        }
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        //[Authorize]
+        //[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        //[ProducesResponseType(StatusCodes.Status200OK)]
+        //[Route("test")]
+        //[HttpGet]
+        //public IActionResult Test()
+        //{
+        //    var path = HttpContext.Request.Headers["Authorization"];
+        //    return Ok("Hello");
+        //}
     }
 }
