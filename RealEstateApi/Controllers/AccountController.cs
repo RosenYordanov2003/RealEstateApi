@@ -9,6 +9,7 @@
     using Responses.Account;
     using Data.Data.Models;
     using Core.Models.Account;
+    using RealEstate.Core.Contracts;
 
     [Route("api/account")]
     [ApiController]
@@ -16,10 +17,13 @@
     {
         private IConfiguration _config;
         private UserManager<User> _userManager;
-        public AccountController(IConfiguration config, UserManager<User> userManager)
+        private IAccountService _accountService;
+        public AccountController(IConfiguration config, UserManager<User> userManager, 
+            IAccountService accountService)
         {
             _config = config;
             _userManager = userManager;
+            _accountService = accountService;
         }
         [HttpPost]
         [Route("register")]
@@ -72,64 +76,13 @@
             {
                 return BadRequest(new LoginResponseModel(false, null, "Wrong Password!"));
             }
-          
-            var token = await  GenerateJwtTokenAsync(user);
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            var issuer = _config.GetSection("Jwt:ValidIssuer").Get<string>();
+            var audience = _config.GetSection("Jwt:ValidAudience").Get<string>();
+
+            var token = await  _accountService.GenerateJwtTokenAsync(user, securityKey, issuer, audience);
 
             return Ok(new LoginResponseModel(true, token));
         }
-        private async Task<string> GenerateJwtTokenAsync(User user)
-        {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
-            var issuer = _config.GetSection("Jwt:ValidIssuer").Get<string>();
-            var aud = _config.GetSection("Jwt:ValidAudience").Get<string>();
-
-
-            SecurityTokenDescriptor tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(await GetUserClaims(user)),
-                Expires = DateTime.UtcNow.AddMinutes(15),
-                Issuer = issuer,
-                Audience = aud,
-                SigningCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature),
-            };
-            JwtSecurityTokenHandler jwtTokenHandler = new JwtSecurityTokenHandler();
-            SecurityToken token = jwtTokenHandler.CreateToken(tokenDescriptor);
-            string jwtToken = jwtTokenHandler.WriteToken(token);
-
-            return jwtToken;
-        }
-        private async Task<List<Claim>> GetUserClaims(User user)
-        {
-            var claims = new List<Claim>()
-            {
-                    new Claim("Id", user.Id.ToString()),
-                    new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                    new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-                    new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString())
-            };
-
-            var userRoles = await _userManager.GetRolesAsync(user);
-            var userClaims = await _userManager.GetClaimsAsync(user);
-
-            claims.AddRange(userClaims);
-
-            foreach (var userRole in userRoles)
-            {
-                claims.Add(new Claim(ClaimTypes.Role, userRole));
-            }
-
-            return claims;
-        }
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        //[Authorize]
-        //[ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        //[ProducesResponseType(StatusCodes.Status200OK)]
-        //[Route("test")]
-        //[HttpGet]
-        //public IActionResult Test()
-        //{
-        //    var path = HttpContext.Request.Headers["Authorization"];
-        //    return Ok("Hello");
-        //}
     }
 }
