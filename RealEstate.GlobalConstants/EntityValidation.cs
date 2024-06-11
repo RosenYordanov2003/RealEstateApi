@@ -17,6 +17,8 @@
 
             public const int CITY_MAX_LENGTH = 57;
             public const int ADDRESS_MAX_LENGTH = 110;
+
+            public const int DESCRIPTION_MAX_LENGTH = 800;
         }
     }
 }

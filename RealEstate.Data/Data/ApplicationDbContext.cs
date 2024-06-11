@@ -27,6 +27,7 @@
             builder.ApplyConfiguration(new SalesCategoryEntityConfiguration());
             builder.ApplyConfiguration(new PictureEntityConfiguration());
             builder.ApplyConfiguration(new PropertyCategoryEntityConfiguration());
+            builder.ApplyConfiguration(new CityEntityConfiguration());
             builder.ApplyConfiguration(new PropertyEntityConfiguration());
         }
     }

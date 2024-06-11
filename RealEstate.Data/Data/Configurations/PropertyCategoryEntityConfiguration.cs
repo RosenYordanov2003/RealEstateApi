@@ -23,10 +23,16 @@
             PropertyCategory category2 = new PropertyCategory()
             {
                 Id = 2,
-                Name = "Apartments"
+                Name = "Apartment"
+            };
+            PropertyCategory category3 = new PropertyCategory()
+            {
+                Id = 3,
+                Name = "Studio"
             };
             categories.Add(category1);
             categories.Add(category2);
+            categories.Add(category3);
 
             return categories;
         }
