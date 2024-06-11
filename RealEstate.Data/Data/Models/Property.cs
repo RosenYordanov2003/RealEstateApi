@@ -16,7 +16,9 @@
         public Guid Id { get; set; }
         public int BedRoomsCount { get; set; }
         public int BathRoomsCount { get; set; }
+        [Column(TypeName = "decimal(17, 15)")]
         public decimal Latitude { get; set; }
+        [Column(TypeName = "decimal(17, 15)")]
         public decimal Longitude { get; set; }
         public decimal SquareMeters { get; set; }
         public int FloorNumber { get; set; }
