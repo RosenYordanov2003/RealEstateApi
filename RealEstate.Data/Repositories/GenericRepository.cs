@@ -30,15 +30,12 @@
             }
         }
 
-        public async Task<IEnumerable<T?>> GetAllAsync(bool tracked = true, 
+        public async Task<IEnumerable<T>> GetAllAsync(bool tracked = true, 
             Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null)
         {
-            IQueryable<T> query = _dbSet;
-            if (!tracked)
-            {
-                query = query.AsNoTracking();
-            }
-            if(filter != null)
+            IQueryable<T> query = tracked ? _dbSet : _dbSet.AsNoTracking();
+
+            if (filter != null)
             {
                 query = query.Where(filter);
             }
