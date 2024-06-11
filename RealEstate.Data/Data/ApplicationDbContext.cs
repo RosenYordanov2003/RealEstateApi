@@ -10,13 +10,13 @@
     {
         public ApplicationDbContext(DbContextOptions options) : base(options) { }
 
-        public DbSet<User> Users { get; set; }
         public DbSet<SaleCategory> SaleCategories { get; set; }
         public DbSet<Picture> Pictures { get; set; }
         public DbSet<PropertiesRents> PropertiesRents { get; set; }
         public DbSet<Property> Properties { get; set; }
         public DbSet<UserFavoriteProperties> UsersFavoriteProperties { get; set; }
         public DbSet<PropertyCategory> PropertyCategories { get; set; }
+        public DbSet<City> Cities { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -27,6 +27,7 @@
             builder.ApplyConfiguration(new SalesCategoryEntityConfiguration());
             builder.ApplyConfiguration(new PictureEntityConfiguration());
             builder.ApplyConfiguration(new PropertyCategoryEntityConfiguration());
+            builder.ApplyConfiguration(new PropertyEntityConfiguration());
         }
     }
 }

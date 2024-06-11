@@ -27,8 +27,9 @@
         public int CategoryId { get; set; }
         public SaleCategory Category { get; set; } = null!;
         public decimal Price { get; set; }
-        [MaxLength(CITY_MAX_LENGTH)]
-        public string City { get; set; } = null!;
+        [ForeignKey(nameof(City))]
+        public int CityId { get; set; }
+        public City City { get; set; } = null!;
         [MaxLength(ADDRESS_MAX_LENGTH)]
         public string Address { get; set; } = null!;
 
