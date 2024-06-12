@@ -7,6 +7,10 @@
     using Microsoft.OpenApi.Models;
     using Data.Data.Models;
     using Data.Data;
+    using Data.Repositories.Contracts;
+    using Data.Repositories;
+    using Core.Contracts;
+    using Core.Services;
 
     public static class ServiceCollectionExtensions
     {
@@ -114,6 +118,13 @@
                     opt.AllowAnyMethod();
                 });
             });
+            return services;
+        }
+        public static IServiceCollection AddServices(this IServiceCollection services)
+        {
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddScoped<IAccountService, AccountService>();
+
             return services;
         }
     }

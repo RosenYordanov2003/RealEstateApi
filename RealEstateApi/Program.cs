@@ -1,6 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using RealEstate.Core.Contracts;
-using RealEstate.Core.Services;
 using RealEstate.Data.Data;
 using RealEstate.Extensions;
 
@@ -24,13 +22,13 @@ builder.Services.AddApplicationCookieConfiguration();
 builder.Services.AddControllers();
 builder.Services.AddAuthorization();
 
-builder.Services.AddScoped<IAccountService, AccountService>();
-
+builder.Services.AddServices();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddSwaggerGen();
 
 builder.Services.AddSwaggerConfiguration();
+
 
 var app = builder.Build();
 
