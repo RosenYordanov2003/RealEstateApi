@@ -124,6 +124,8 @@
         {
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IPropertyService, PropertyService>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             return services;
         }

@@ -31,10 +31,15 @@
         }
 
         public async Task<IEnumerable<T>> GetAllAsync(bool tracked = true, 
-            Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null)
+            Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+            params Expression<Func<T, object>>[] includes)
         {
             IQueryable<T> query = tracked ? _dbSet : _dbSet.AsNoTracking();
 
+            foreach (var item in includes)
+            {
+                query = query.Include(item);
+            }
             if (filter != null)
             {
                 query = query.Where(filter);

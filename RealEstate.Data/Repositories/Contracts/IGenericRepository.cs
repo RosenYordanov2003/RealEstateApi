@@ -7,7 +7,8 @@
         Task AddAsync(T entity);
         Task<T?> GetByIdAsync(Expression<Func<T, bool>> expression);
         Task<IEnumerable<T>> GetAllAsync(bool tracked = true, 
-            Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null);
+            Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+            params Expression<Func<T, object>>[] includes);
         Task UpdateAsync(T entity);
         Task DeleteByIdAsync(T entity);
         Task SaveAsync();

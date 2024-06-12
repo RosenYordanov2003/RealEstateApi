@@ -26,9 +26,9 @@
         [MaxLength(NAME_MAX_LENGTH)]
         public string Name { get; set; } = null!;
 
-        [ForeignKey(nameof(Category))]
+        [ForeignKey(nameof(SaleCategory))]
         public int SaleCategoryId { get; set; }
-        public SaleCategory Category { get; set; } = null!;
+        public SaleCategory SaleCategory { get; set; } = null!;
         public decimal Price { get; set; }
         [ForeignKey(nameof(City))]
         public int CityId { get; set; }

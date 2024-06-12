@@ -8,7 +8,7 @@
         public void Configure(EntityTypeBuilder<SaleCategory> builder)
         {
             builder.HasMany(c => c.Properties)
-                .WithOne(p => p.Category)
+                .WithOne(p => p.SaleCategory)
                 .OnDelete(DeleteBehavior.NoAction);
             builder.HasData(SeedCategories());
         }
