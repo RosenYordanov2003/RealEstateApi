@@ -5,9 +5,9 @@
     using Microsoft.EntityFrameworkCore;
     using MediatR;
     using Models.Property;
-    using Queries;
     using Data.Data.Models;
     using Data.Repositories.Contracts;
+    using Queries.Properties;
 
     public class GetTopTenPropertiesHandler : IRequestHandler<GetTopTenPropertiesQuery, IEnumerable<PropertyModel>>
     {

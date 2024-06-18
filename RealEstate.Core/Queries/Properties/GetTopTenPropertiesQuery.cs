@@ -1,4 +1,4 @@
-﻿namespace RealEstate.Core.Queries
+﻿namespace RealEstate.Core.Queries.Properties
 {
     using MediatR;
     using Models.Property;
