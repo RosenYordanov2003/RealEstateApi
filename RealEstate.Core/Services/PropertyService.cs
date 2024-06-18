@@ -4,6 +4,7 @@
     using Models.Property;
     using Data.Repositories.Contracts;
     using Data.Data.Models;
+    using Microsoft.EntityFrameworkCore;
 
     public class PropertyService : IPropertyService
     {
@@ -15,10 +16,10 @@
 
         public async Task<IEnumerable<PropertyModel>> GetAllPropertiesByCategoryAsync(string propertyCategory, string saleCategory)
         {
-            var result = await _unitOfWork.Repository<Property>().GetAllAsync(false, p => p.PropertyCategory.Name.ToLower() == propertyCategory.ToLower()
-            && p.SaleCategory.Name.ToLower() == saleCategory.ToLower(), null, p => p.City);
+            var result =  _unitOfWork.Repository<Property>().GetAll(false, p => p.PropertyCategory.Name.ToLower() == propertyCategory.ToLower()
+            && p.SaleCategory.Name.ToLower() == saleCategory.ToLower());
 
-            return result.Select(p => new PropertyModel()
+            return await result.Select(p => new PropertyModel()
             {
                 Id = p.Id,
                 SquareMeters = p.SquareMeters,
@@ -28,7 +29,8 @@
                 Name = p.Name,
                 Price = p.Price
             })
-             .Take(10);
+             .Take(10)
+             .ToArrayAsync();
         }
     }
 }

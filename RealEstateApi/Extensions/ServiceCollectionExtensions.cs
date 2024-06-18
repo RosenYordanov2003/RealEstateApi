@@ -11,6 +11,7 @@
     using Data.Repositories;
     using Core.Contracts;
     using Core.Services;
+    using System.Reflection;
 
     public static class ServiceCollectionExtensions
     {
@@ -126,6 +127,10 @@
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IPropertyService, PropertyService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddMediatR(cfg =>
+            {
+                cfg.RegisterServicesFromAssemblies(new Assembly[] { typeof(Program).Assembly, typeof(RealEstate.Core.Handlers.Properties.GetTopTenPropertiesHandler).Assembly});
+            });
 
             return services;
         }

@@ -30,25 +30,20 @@
             }
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync(bool tracked = true, 
-            Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
-            params Expression<Func<T, object>>[] includes)
+        public IQueryable<T> GetAll(bool tracked = true, 
+            Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null)
         {
             IQueryable<T> query = tracked ? _dbSet : _dbSet.AsNoTracking();
 
-            foreach (var item in includes)
-            {
-                query = query.Include(item);
-            }
             if (filter != null)
             {
                 query = query.Where(filter);
             }
             if(orderBy != null)
             {
-                return await orderBy(query).ToArrayAsync();
+                return  orderBy(query);
             }
-            return await query.ToArrayAsync();
+            return  query;
         }
 
         public async Task<T?> GetByIdAsync(Expression<Func<T, bool>> expression)
