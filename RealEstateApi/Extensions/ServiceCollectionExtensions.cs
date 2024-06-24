@@ -12,6 +12,7 @@
     using Core.Contracts;
     using Core.Services;
     using System.Reflection;
+    using RealEstate.Middlewares;
 
     public static class ServiceCollectionExtensions
     {
@@ -127,6 +128,7 @@
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IPropertyService, PropertyService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddTransient<GlobalExceptionHandler>();
             services.AddMediatR(cfg =>
             {
                 cfg.RegisterServicesFromAssemblies(new Assembly[] { typeof(Program).Assembly, typeof(RealEstate.Core.Handlers.Properties.GetTopTenPropertiesHandler).Assembly});

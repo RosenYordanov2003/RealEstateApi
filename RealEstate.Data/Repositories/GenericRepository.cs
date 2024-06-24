@@ -31,7 +31,7 @@
         }
 
         public IQueryable<T> GetAll(bool tracked = true, 
-            Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null)
+            Expression<Func<T, bool>> filter = null, Expression<Func<IQueryable<T>, IOrderedQueryable<T>>> orderBy = null)
         {
             IQueryable<T> query = tracked ? _dbSet : _dbSet.AsNoTracking();
 
@@ -41,7 +41,8 @@
             }
             if(orderBy != null)
             {
-                return  orderBy(query);
+                var compiledOrderBy = orderBy.Compile();
+                return compiledOrderBy(query);
             }
             return  query;
         }

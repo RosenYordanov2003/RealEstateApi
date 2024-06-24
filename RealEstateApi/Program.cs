@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using RealEstate.Data.Data;
 using RealEstate.Extensions;
+using RealEstate.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,7 +45,6 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseCors("free");
-
+app.UseMiddleware<GlobalExceptionHandler>();
 app.MapControllers();
-
 app.Run();
