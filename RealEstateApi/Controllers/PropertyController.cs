@@ -3,6 +3,7 @@
     using Microsoft.AspNetCore.Mvc;
     using MediatR;
     using Core.Queries.Properties;
+    using RealEstate.Core.Queries.Users;
 
     [Route("api/properties")]
     [ApiController]
@@ -37,6 +38,20 @@
             }
             var propertyModel = await _mediator.Send(new GetPropertyByIdQuery(Id));
             return Ok(propertyModel);
+        }
+        [HttpGet("getUserProperties{userId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetUserProeprties([FromRoute] Guid userId)
+        {
+            bool result = await _mediator.Send(new CheckIfUserExistsByIdQuery(userId));
+            if (!result)
+            {
+                return NotFound();
+            }
+            var properties = await _mediator.Send(new GetUserPropertiesQuery(userId));
+            return Ok(properties);
         }
     }
 }

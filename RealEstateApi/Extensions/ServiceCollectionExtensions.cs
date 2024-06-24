@@ -12,7 +12,7 @@
     using Core.Contracts;
     using Core.Services;
     using System.Reflection;
-    using RealEstate.Middlewares;
+    using Middlewares;
 
     public static class ServiceCollectionExtensions
     {
