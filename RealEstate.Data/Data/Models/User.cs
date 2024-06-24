@@ -8,10 +8,10 @@
         {
             OwnedProperties = new HashSet<Property>();
             UserFavoriteProperties = new HashSet<UserFavoriteProperties>();
-            RentedProperties = new HashSet<Property>();
+            RentedProperties = new HashSet<PropertiesRents>();
         }
         public ICollection<Property> OwnedProperties { get; set; }
-        public ICollection<Property> RentedProperties { get; set; }
+        public ICollection<PropertiesRents> RentedProperties { get; set; }
         public ICollection<UserFavoriteProperties> UserFavoriteProperties { get; set; }
     }
 }

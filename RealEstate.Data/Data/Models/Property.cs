@@ -10,7 +10,7 @@
         {
             Pictures = new HashSet<Picture>();
             UserFavoriteProperties = new HashSet<UserFavoriteProperties>();
-            Rents = new HashSet<PropertiesRents>();
+            PropertiesRents = new HashSet<PropertiesRents>();
         }
         [Key]
         public Guid Id { get; set; }
@@ -48,11 +48,8 @@
         public Guid OwnerId { get; set; }
         public User Owner { get; set; } = null!;
 
-        [ForeignKey(nameof(Renter))]
-        public Guid? RenterId { get; set; }
-        public User? Renter { get; set; }
         public ICollection<UserFavoriteProperties> UserFavoriteProperties { get; set; }
         public ICollection<Picture> Pictures { get; set; }
-        public ICollection<PropertiesRents> Rents { get; set; }
+        public ICollection<PropertiesRents> PropertiesRents { get; set; }
     }
 }

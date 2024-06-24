@@ -29,6 +29,7 @@
             builder.ApplyConfiguration(new PropertyCategoryEntityConfiguration());
             builder.ApplyConfiguration(new CityEntityConfiguration());
             builder.ApplyConfiguration(new PropertyEntityConfiguration());
+            builder.ApplyConfiguration(new PropertiesRentsEntityConfiguration());
         }
     }
 }
