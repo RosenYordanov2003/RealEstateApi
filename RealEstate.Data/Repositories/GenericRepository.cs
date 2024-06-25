@@ -21,7 +21,7 @@
             await SaveAsync();
         }
 
-        public async Task DeleteByIdAsync(T entity)
+        public async Task DeleteAsync(T entity)
         {
             if (entity != null)
             {

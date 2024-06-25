@@ -3,10 +3,10 @@
     using Microsoft.AspNetCore.Mvc;
     using MediatR;
     using Core.Queries.Properties;
-    using RealEstate.Core.Queries.Users;
-    using RealEstate.Responses.Properties;
-    using RealEstate.Core.Commands;
-    using RealEstate.Core.Models.Property;
+    using Core.Queries.Users;
+    using Responses.Properties;
+    using Core.Commands;
+    using Core.Models.Property;
 
     [Route("api/properties")]
     [ApiController]
@@ -58,7 +58,7 @@
         }
         [HttpPost]
         [Route("addToFavorite")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> AddPropertyToUserFavortie([FromQuery] Guid userId, [FromQuery] Guid propertyId)
@@ -74,7 +74,7 @@
                 return NotFound(new AddToFavoriteResponse(false, "Property does not exist"));
             }
             await _mediator.Send(new AddPropertyToUserFavoriteCommand(new AddPropertyToUserFavoritesModel(userId, propertyId)));
-            return Ok(new AddToFavoriteResponse(true, " "));
+            return Created("/getUserProperties", new AddToFavoriteResponse(true, " "));
         }
         [HttpGet]
         [Route("userFavorite {userId}")]
@@ -90,6 +90,27 @@
             }
             var properties = await _mediator.Send(new GetUserFavoritePropertiesQuery(userId));
             return Ok(properties);
+        }
+        [HttpPost]
+        [Route("removeFromFavorite")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> RemoveFromUserFavorite(Guid userId, Guid propertyId)
+        {
+            bool isUserExists = await _mediator.Send(new CheckIfUserExistsByIdQuery(userId));
+            if (!isUserExists)
+            {
+                return NotFound(new AddToFavoriteResponse(false, "User does not exist"));
+            }
+            bool isPropertyExists = await _mediator.Send(new CheckIfPropertyExistsQuery(propertyId));
+            if (!isPropertyExists)
+            {
+                return NotFound(new AddToFavoriteResponse(false, "Property does not exist"));
+            }
+            await _mediator.Send(new RemoveProeprtyFromUserFavoriteCommand(new AddPropertyToUserFavoritesModel(userId, propertyId)));
+
+            return Ok();
         }
     }
 }
