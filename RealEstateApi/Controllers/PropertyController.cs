@@ -7,6 +7,7 @@
     using Responses.Properties;
     using Core.Commands;
     using Core.Models.Property;
+    using System.Security.Claims;
 
     [Route("api/properties")]
     [ApiController]
@@ -61,15 +62,15 @@
             bool isUserExists = await _mediator.Send(new CheckIfUserExistsByIdQuery(userId));
             if (!isUserExists)
             {
-                return NotFound(new AddToFavoriteResponse(false, "User does not exist"));
+                return NotFound(new PropertyBaseResponseModel(false, "User does not exist"));
             }
             bool isPropertyExists = await _mediator.Send(new CheckIfPropertyExistsQuery(propertyId));
             if (!isPropertyExists)
             {
-                return NotFound(new AddToFavoriteResponse(false, "Property does not exist"));
+                return NotFound(new PropertyBaseResponseModel(false, "Property does not exist"));
             }
             await _mediator.Send(new AddPropertyToUserFavoriteCommand(new AddPropertyToUserFavoritesModel(userId, propertyId)));
-            return Created("/getUserProperties", new AddToFavoriteResponse(true, " "));
+            return Created("/getUserProperties", new PropertyBaseResponseModel(true, " "));
         }
 
         [HttpGet]
@@ -100,16 +101,39 @@
             bool isUserExists = await _mediator.Send(new CheckIfUserExistsByIdQuery(userId));
             if (!isUserExists)
             {
-                return NotFound(new AddToFavoriteResponse(false, "User does not exist"));
+                return NotFound(new PropertyBaseResponseModel(false, "User does not exist"));
             }
             bool isPropertyExists = await _mediator.Send(new CheckIfPropertyExistsQuery(propertyId));
             if (!isPropertyExists)
             {
-                return NotFound(new AddToFavoriteResponse(false, "Property does not exist"));
+                return NotFound(new PropertyBaseResponseModel(false, "Property does not exist"));
             }
             await _mediator.Send(new RemoveProeprtyFromUserFavoriteCommand(new AddPropertyToUserFavoritesModel(userId, propertyId)));
 
             return Ok();
+        }
+
+        [HttpDelete]
+        [Route("delete {propertyId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+
+        public async Task<IActionResult> DeleteProperty([FromRoute] Guid propertyId)
+        {
+            bool isPropertyExists = await _mediator.Send(new CheckIfPropertyExistsQuery(propertyId));
+            if (!isPropertyExists)
+            {
+                return NotFound(new PropertyBaseResponseModel(false, "Property does not exist"));
+            }
+            Guid userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            bool isOwnedByUser = await _mediator.Send(new CheckIfUserOwnsPropertyQuery(userId, propertyId));
+            if (!isOwnedByUser)
+            {
+                return BadRequest(new PropertyBaseResponseModel(false, "User dosen't own a property"));
+            }
+
         }
     }
 }

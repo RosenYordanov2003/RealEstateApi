@@ -1,8 +1,8 @@
 ﻿namespace RealEstate.Responses.Properties
 {
-    public class AddToFavoriteResponse
+    public class PropertyBaseResponseModel
     {
-        public AddToFavoriteResponse(bool success, string? errorMessage)
+        public PropertyBaseResponseModel(bool success, string? errorMessage)
         {
             Success = success;
             ErrorMessage = errorMessage;

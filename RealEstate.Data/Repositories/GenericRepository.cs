@@ -51,10 +51,6 @@
             return await _dbContext.Set<T>().AnyAsync(expression);
         }
 
-        public IQueryable<T> GetByIdAsync(Expression<Func<T, bool>> expression)
-        {
-            return  _dbContext.Set<T>().Where(expression);
-        }
 
         public async Task SaveAsync()
         {
