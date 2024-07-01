@@ -2,27 +2,23 @@
 {
     using System.Security.Claims;
     using Microsoft.AspNetCore.Mvc;
-    using MediatR;
     using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
+    using MediatR;
     using Core.Queries.Properties;
     using Core.Queries.Users;
     using Responses.Properties;
     using Core.Commands;
     using Core.Models.Property;
-    using Microsoft.AspNetCore.Authentication.JwtBearer;
-    using Microsoft.AspNetCore.Identity;
-    using RealEstate.Data.Data.Models;
 
     [Route("api/properties")]
     [ApiController]
     public class PropertyController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly UserManager<User> _userManager;
-        public PropertyController(IMediator mediator, UserManager<User> userManager)
+        public PropertyController(IMediator mediator)
         {
             _mediator = mediator;
-            _userManager = userManager;
         }
 
         [HttpGet("{Id}")]
@@ -134,10 +130,10 @@
             {
                 return NotFound(new PropertyBaseResponseModel(false, "Property does not exist"));
             }
-            var username = (User.FindFirstValue(ClaimTypes.NameIdentifier));
-            User user = await _userManager.FindByNameAsync(username);
+            string username = (User.FindFirstValue(ClaimTypes.NameIdentifier));
+            Guid userId = await _mediator.Send(new GetUserIdQuery(username));
 
-            bool isOwnedByUser = await _mediator.Send(new CheckIfUserOwnsPropertyQuery(user.Id, propertyId));
+            bool isOwnedByUser = await _mediator.Send(new CheckIfUserOwnsPropertyQuery(userId, propertyId));
             if (!isOwnedByUser)
             {
                 return BadRequest(new PropertyBaseResponseModel(false, "User dosen't own that property"));
