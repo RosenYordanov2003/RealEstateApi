@@ -17,20 +17,12 @@
         {
             _mediator = mediator;
         }
-        [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [Route("all")]
-        public async Task<IActionResult> GetAllProperties([FromQuery] string saleCategory = "Rent", [FromQuery] string propertyCateogry = "Apartment")
-        {
 
-            var result = await _mediator.Send(new GetTopTenPropertiesQuery(propertyCateogry, saleCategory));
-
-            return Ok(result);
-        }
         [HttpGet("{Id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+
         public async Task<IActionResult> GetProperty(Guid Id)
         {
             bool result = await _mediator.Send(new CheckIfPropertyExistsQuery(Id));
@@ -42,6 +34,7 @@
             var propertyModel = await _mediator.Send(new GetPropertyByIdQuery(Id));
             return Ok(propertyModel);
         }
+
         [HttpGet("getUserProperties{userId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -56,11 +49,13 @@
             var properties = await _mediator.Send(new GetUserPropertiesQuery(userId));
             return Ok(properties);
         }
+
         [HttpPost]
         [Route("addToFavorite")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+
         public async Task<IActionResult> AddPropertyToUserFavortie([FromQuery] Guid userId, [FromQuery] Guid propertyId)
         {
             bool isUserExists = await _mediator.Send(new CheckIfUserExistsByIdQuery(userId));
@@ -76,11 +71,13 @@
             await _mediator.Send(new AddPropertyToUserFavoriteCommand(new AddPropertyToUserFavoritesModel(userId, propertyId)));
             return Created("/getUserProperties", new AddToFavoriteResponse(true, " "));
         }
+
         [HttpGet]
         [Route("userFavorite {userId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+
         public async Task<IActionResult> GetUserFavoriteProperties([FromRoute] Guid userId)
         {
             bool isUserExists = await _mediator.Send(new CheckIfUserExistsByIdQuery(userId));
@@ -91,11 +88,13 @@
             var properties = await _mediator.Send(new GetUserFavoritePropertiesQuery(userId));
             return Ok(properties);
         }
+
         [HttpPost]
         [Route("removeFromFavorite")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+
         public async Task<IActionResult> RemoveFromUserFavorite(Guid userId, Guid propertyId)
         {
             bool isUserExists = await _mediator.Send(new CheckIfUserExistsByIdQuery(userId));
