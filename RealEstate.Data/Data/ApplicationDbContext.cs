@@ -3,8 +3,8 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore;
-    using RealEstate.Data.Data.Configurations;
-    using RealEstate.Data.Data.Models;
+    using Configurations;
+    using Models;
 
     public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
     {

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RealEstate.Data.Data;
 
@@ -11,9 +12,10 @@ using RealEstate.Data.Data;
 namespace RealEstate.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240701141713_addIsAvailableColumnInPropertiesTable")]
+    partial class addIsAvailableColumnInPropertiesTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -263,7 +265,7 @@ namespace RealEstate.Data.Migrations
                     b.Property<int>("FloorNumber")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsDeleted")
+                    b.Property<bool>("IsAvailable")
                         .HasColumnType("bit");
 
                     b.Property<decimal>("Latitude")
@@ -314,7 +316,7 @@ namespace RealEstate.Data.Migrations
                             CityId = 1,
                             Description = "Тристаен апартамент в новострояща се сграда разположен е на втори жилищен етаж. Състои се от: коридор, всекидневна с кухненски бокс и тераса,   две спални, едната с гардеробна и собствена баня с тоалетна,   баня с тоалетна и тераса. Жилището се издава  на шпакловка и замазка, с външни врати с многоточково заключване, ВиК до тапа, електрозахранване по проект. Сградата ще бъде присъединена към Газификационна мрежа.",
                             FloorNumber = 2,
-                            IsDeleted = false,
+                            IsAvailable = false,
                             Latitude = 42.64060043988789m,
                             Longitude = 23.32371168076406m,
                             Name = "Тристаен Апартамент",
@@ -466,15 +468,15 @@ namespace RealEstate.Data.Migrations
                         {
                             Id = new Guid("e7d6ee68-2a6d-4a1a-b640-b26fceb74254"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "9a9a4094-aa73-4e22-a06a-350934f7abfb",
+                            ConcurrencyStamp = "bfb534ff-617d-4806-a644-bc8f85778515",
                             Email = "bobi123@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "BOBI123@GMAIL.COM",
                             NormalizedUserName = "BOBI",
-                            PasswordHash = "AQAAAAEAACcQAAAAEDyXXSVxlgZO3hhbgYPzZtw+zjNv/XG4NnbMYUxPOU+hgUbOZBugMqJv5JH9fFLkzg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEF/jTyMEPp9/gkSy4oZU3d+Zi71a/YNowmtL71iBOJSv68tSTo4wmMdymMKvjiRzHg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "065d1212-fc58-43ee-a2fa-5b8a39269a6b",
+                            SecurityStamp = "50455ebd-2f22-465f-9453-4c144c4539a7",
                             TwoFactorEnabled = false,
                             UserName = "Bobi"
                         });

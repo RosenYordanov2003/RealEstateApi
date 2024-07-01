@@ -13,6 +13,8 @@
                 .WithMany(c => c.Properties)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            builder.HasQueryFilter(p => !p.IsDeleted);
+
             builder.HasData(SeedProperties());
         }
 

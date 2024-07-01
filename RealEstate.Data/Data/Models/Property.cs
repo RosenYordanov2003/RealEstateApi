@@ -51,6 +51,6 @@
         public ICollection<UserFavoriteProperties> UserFavoriteProperties { get; set; }
         public ICollection<Picture> Pictures { get; set; }
         public ICollection<PropertiesRents> PropertiesRents { get; set; }
-        public bool IsAvailable { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }
