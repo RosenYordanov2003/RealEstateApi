@@ -10,6 +10,7 @@
         Task UpdateAsync(T entity);
         Task DeleteAsync(T entity);
         Task SaveAsync();
+        IQueryable<T> GetByAsync(Expression<Func<T, bool>> expression);
         Task<bool> CheckIfExistsByIdAsync(Expression<Func<T, bool>> expression);
     }
 }

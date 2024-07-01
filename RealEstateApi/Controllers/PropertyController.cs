@@ -1,22 +1,28 @@
 ﻿namespace RealEstate.Controllers
 {
+    using System.Security.Claims;
     using Microsoft.AspNetCore.Mvc;
     using MediatR;
+    using Microsoft.AspNetCore.Authorization;
     using Core.Queries.Properties;
     using Core.Queries.Users;
     using Responses.Properties;
     using Core.Commands;
     using Core.Models.Property;
-    using System.Security.Claims;
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
+    using Microsoft.AspNetCore.Identity;
+    using RealEstate.Data.Data.Models;
 
     [Route("api/properties")]
     [ApiController]
     public class PropertyController : ControllerBase
     {
         private readonly IMediator _mediator;
-        public PropertyController(IMediator mediator)
+        private readonly UserManager<User> _userManager;
+        public PropertyController(IMediator mediator, UserManager<User> userManager)
         {
             _mediator = mediator;
+            _userManager = userManager;
         }
 
         [HttpGet("{Id}")]
@@ -113,6 +119,7 @@
             return Ok();
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpDelete]
         [Route("delete {propertyId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -127,13 +134,18 @@
             {
                 return NotFound(new PropertyBaseResponseModel(false, "Property does not exist"));
             }
-            Guid userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            bool isOwnedByUser = await _mediator.Send(new CheckIfUserOwnsPropertyQuery(userId, propertyId));
+            var username = (User.FindFirstValue(ClaimTypes.NameIdentifier));
+            User user = await _userManager.FindByNameAsync(username);
+
+            bool isOwnedByUser = await _mediator.Send(new CheckIfUserOwnsPropertyQuery(user.Id, propertyId));
             if (!isOwnedByUser)
             {
-                return BadRequest(new PropertyBaseResponseModel(false, "User dosen't own a property"));
+                return BadRequest(new PropertyBaseResponseModel(false, "User dosen't own that property"));
             }
 
+            await _mediator.Send(new DeletePropertyCommand(propertyId));
+
+            return Ok(new PropertyBaseResponseModel(true, null));
         }
     }
 }

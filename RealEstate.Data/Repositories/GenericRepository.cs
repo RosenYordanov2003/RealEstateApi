@@ -30,7 +30,7 @@
             }
         }
 
-        public IQueryable<T> GetAll(bool tracked = true, 
+        public IQueryable<T> GetAll(bool tracked = true,
             Expression<Func<T, bool>> filter = null, Expression<Func<IQueryable<T>, IOrderedQueryable<T>>> orderBy = null)
         {
             IQueryable<T> query = tracked ? _dbSet : _dbSet.AsNoTracking();
@@ -39,18 +39,21 @@
             {
                 query = query.Where(filter);
             }
-            if(orderBy != null)
+            if (orderBy != null)
             {
                 var compiledOrderBy = orderBy.Compile();
                 return compiledOrderBy(query);
             }
-            return  query;
+            return query;
         }
         public async Task<bool> CheckIfExistsByIdAsync(Expression<Func<T, bool>> expression)
         {
             return await _dbContext.Set<T>().AnyAsync(expression);
         }
-
+        public IQueryable<T> GetByAsync(Expression<Func<T, bool>> expression)
+        {
+            return _dbContext.Set<T>().Where(expression);
+        }
 
         public async Task SaveAsync()
         {

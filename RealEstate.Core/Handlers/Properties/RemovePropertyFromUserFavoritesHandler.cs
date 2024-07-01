@@ -16,7 +16,7 @@
         public async Task Handle(RemoveProeprtyFromUserFavoriteCommand request, CancellationToken cancellationToken)
         {
             UserFavoriteProperties userFavoriteProperties = await _unitOfWork.Repository<UserFavoriteProperties>()
-                .GetByIdAsync(ufp => ufp.UserId == request.model.UserId && ufp.PropertyId == request.model.PropertyId)
+                .GetByAsync(ufp => ufp.UserId == request.model.UserId && ufp.PropertyId == request.model.PropertyId)
                 .FirstOrDefaultAsync();
 
             if (userFavoriteProperties == null)

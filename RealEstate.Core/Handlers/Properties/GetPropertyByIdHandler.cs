@@ -19,7 +19,7 @@
 
         public  async Task<PropertyDetailsModel> Handle(GetPropertyByIdQuery request, CancellationToken cancellationToken)
         {
-            return await _unitOfWork.Repository<Property>().GetByIdAsync(x => x.Id == request.id)
+            return await _unitOfWork.Repository<Property>().GetByAsync(x => x.Id == request.id)
                 .Select(x => new PropertyDetailsModel()
                 {
                     Id = x.Id,
