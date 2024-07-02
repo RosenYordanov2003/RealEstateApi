@@ -11,6 +11,7 @@
     using Core.Commands;
     using Core.Models.Property;
     using RealEstate.Core.Commands.Properties;
+    using RealEstate.Extensions;
 
     [Route("api/properties")]
     [ApiController]
@@ -131,7 +132,7 @@
             {
                 return NotFound(new PropertyBaseResponseModel(false, "Property does not exist"));
             }
-            string username = (User.FindFirstValue(ClaimTypes.NameIdentifier));
+            string username = User.GetUserName();
             Guid userId = await _mediator.Send(new GetUserIdQuery(username));
 
             bool isOwnedByUser = await _mediator.Send(new CheckIfUserOwnsPropertyQuery(userId, propertyId));
@@ -158,7 +159,7 @@
             {
                 return NotFound(new PropertyBaseResponseModel(false, "Property does not exist"));
             }
-            string username = (User.FindFirstValue(ClaimTypes.NameIdentifier));
+            string username = User.GetUserName();
             Guid userId = await _mediator.Send(new GetUserIdQuery(username));
 
             bool isOwnedByUser = await _mediator.Send(new CheckIfUserOwnsPropertyQuery(userId, propertyId));
