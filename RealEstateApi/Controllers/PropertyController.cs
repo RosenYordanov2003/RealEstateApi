@@ -170,6 +170,7 @@
             return Ok(new PropertyBaseResponseModel(true, null));
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost]
         [Route("rent")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -183,11 +184,13 @@
             {
                 return NotFound(new PropertyBaseResponseModel(false, "Property does not exist"));
             }
-            bool isPropertyForRent = await _mediator.Send(new CheckPropertyCategoryQuery(model.Id));
-            if (!isPropertyForRent)
+
+            bool propertyCategoryIsForRent = await _mediator.Send(new CheckPropertyCategoryQuery(model.Id));
+            if (!propertyCategoryIsForRent)
             {
                 return BadRequest(new PropertyBaseResponseModel(false, "Property is not for rent"));
             }
+
             bool isAvailableForPeriod = await _mediator.Send(new CheckIfPropertyIsRentedQuery(model));
 
             if (!isAvailableForPeriod)
@@ -195,6 +198,8 @@
                 return BadRequest(new PropertyBaseResponseModel(false, "Property is already rented for that period"));
             }
 
+            Guid userId = await _mediator.Send(new GetUserIdQuery(User.GetUserName()));
+            await _mediator.Send(new RentPropertyCommand(model, userId));
 
             return Ok(new PropertyBaseResponseModel(true, null));
         }
