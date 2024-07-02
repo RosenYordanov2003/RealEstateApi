@@ -1,6 +1,5 @@
 ﻿namespace RealEstate.Controllers
 {
-    using System.Security.Claims;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -8,10 +7,9 @@
     using Core.Queries.Properties;
     using Core.Queries.Users;
     using Responses.Properties;
-    using Core.Commands;
     using Core.Models.Property;
-    using RealEstate.Core.Commands.Properties;
-    using RealEstate.Extensions;
+    using Core.Commands.Properties;
+    using Extensions;
 
     [Route("api/properties")]
     [ApiController]
@@ -146,7 +144,7 @@
             return Ok(new PropertyBaseResponseModel(true, null));
         }
 
-        [HttpPost]
+        [HttpPatch]
         [Route("recover {propertyId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -168,6 +166,29 @@
                 return BadRequest(new PropertyBaseResponseModel(false, "User dosen't own that property"));
             }
             await _mediator.Send(new RecoverPropertyCommand(propertyId));
+
+            return Ok(new PropertyBaseResponseModel(true, null));
+        }
+
+        [HttpPost]
+        [Route("rent")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Rent([FromBody] PropertyRentModel model)
+        {
+            bool isPropertyExists = await _mediator.Send(new CheckIfPropertyExistsQuery(model.Id));
+            if (!isPropertyExists)
+            {
+                return NotFound(new PropertyBaseResponseModel(false, "Property does not exist"));
+            }
+            bool isPropertyForRent = await _mediator.Send(new CheckPropertyCategoryQuery(model.Id));
+            if (!isPropertyForRent)
+            {
+                return BadRequest(new PropertyBaseResponseModel(false, "Property is not for rent"));
+            }
+            //bool isAvailableForPeriod = 
 
             return Ok(new PropertyBaseResponseModel(true, null));
         }
