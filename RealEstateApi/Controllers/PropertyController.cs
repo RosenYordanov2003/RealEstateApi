@@ -188,7 +188,13 @@
             {
                 return BadRequest(new PropertyBaseResponseModel(false, "Property is not for rent"));
             }
-            //bool isAvailableForPeriod = 
+            bool isAvailableForPeriod = await _mediator.Send(new CheckIfPropertyIsRentedQuery(model));
+
+            if (!isAvailableForPeriod)
+            {
+                return BadRequest(new PropertyBaseResponseModel(false, "Property is already rented for that period"));
+            }
+
 
             return Ok(new PropertyBaseResponseModel(true, null));
         }
