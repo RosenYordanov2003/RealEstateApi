@@ -5,6 +5,7 @@
     using Commands;
     using Data.Repositories.Contracts;
     using Data.Data.Models;
+    using RealEstate.Core.Commands.Properties;
 
     public class DeletePropertyHandler : IRequestHandler<DeletePropertyCommand>
     {

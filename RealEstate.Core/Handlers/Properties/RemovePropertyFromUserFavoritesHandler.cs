@@ -5,6 +5,7 @@
     using Core.Commands;
     using Data.Data.Models;
     using Data.Repositories.Contracts;
+    using RealEstate.Core.Commands.Properties;
 
     public class RemovePropertyFromUserFavoritesHandler : IRequestHandler<RemoveProeprtyFromUserFavoriteCommand>
     {

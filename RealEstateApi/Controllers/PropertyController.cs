@@ -10,6 +10,7 @@
     using Responses.Properties;
     using Core.Commands;
     using Core.Models.Property;
+    using RealEstate.Core.Commands.Properties;
 
     [Route("api/properties")]
     [ApiController]
@@ -140,6 +141,32 @@
             }
 
             await _mediator.Send(new DeletePropertyCommand(propertyId));
+
+            return Ok(new PropertyBaseResponseModel(true, null));
+        }
+
+        [HttpPost]
+        [Route("recover {propertyId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> RecoverProperty([FromRoute] Guid propertyId)
+        {
+            bool isPropertyExists = await _mediator.Send(new CheckIfPropertyExistsQuery(propertyId));
+            if (!isPropertyExists)
+            {
+                return NotFound(new PropertyBaseResponseModel(false, "Property does not exist"));
+            }
+            string username = (User.FindFirstValue(ClaimTypes.NameIdentifier));
+            Guid userId = await _mediator.Send(new GetUserIdQuery(username));
+
+            bool isOwnedByUser = await _mediator.Send(new CheckIfUserOwnsPropertyQuery(userId, propertyId));
+            if (!isOwnedByUser)
+            {
+                return BadRequest(new PropertyBaseResponseModel(false, "User dosen't own that property"));
+            }
+            await _mediator.Send(new RecoverPropertyCommand(propertyId));
 
             return Ok(new PropertyBaseResponseModel(true, null));
         }

@@ -4,6 +4,7 @@
     using Commands;
     using Data.Repositories.Contracts;
     using RealEstate.Data.Data.Models;
+    using RealEstate.Core.Commands.Properties;
 
     public class AddPropertyToUserFavoriteHandler : IRequestHandler<AddPropertyToUserFavoriteCommand>
     {
