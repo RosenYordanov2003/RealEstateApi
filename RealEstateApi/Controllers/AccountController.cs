@@ -1,8 +1,6 @@
 ﻿namespace RealEstate.Controllers
 {
     using System.Text;
-    using System.Security.Claims;
-    using System.IdentityModel.Tokens.Jwt;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.IdentityModel.Tokens;
@@ -70,11 +68,11 @@
             User user = await _userManager.FindByNameAsync(model.Username);
             if(user == null)
             {
-                return NotFound(new LoginResponseModel(false, null, "User not found"));
+                return NotFound(new LoginResponseModel(false, null, "Incorrect username or password"));
             }
             if(!await _userManager.CheckPasswordAsync(user, model.Password))
             {
-                return BadRequest(new LoginResponseModel(false, null, "Wrong Password!"));
+                return BadRequest(new LoginResponseModel(false, null, "Incorrect username or password"));
             }
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var issuer = _config.GetSection("Jwt:ValidIssuer").Get<string>();

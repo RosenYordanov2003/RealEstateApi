@@ -1,10 +1,10 @@
 ﻿namespace RealEstate.Core.Handlers.Properties
 {
+    using Microsoft.EntityFrameworkCore;
     using MediatR;
     using Commands.Properties;
     using Data.Repositories.Contracts;
-    using RealEstate.Data.Data.Models;
-    using Microsoft.EntityFrameworkCore;
+    using Data.Data.Models;
 
     public class RentPropertyHandler : IRequestHandler<RentPropertyCommand>
     {
@@ -17,15 +17,23 @@
         public async Task Handle(RentPropertyCommand request, CancellationToken cancellationToken)
         {
             var model = request.model;
-            decimal propertyPrice = await _unitOfWork.
+            Property property = await _unitOfWork.
                  Repository<Property>()
                 .GetByAsync(p => p.Id == model.Id)
-                .Select(p => p.Price)
                 .FirstAsync();
 
             TimeSpan dateFiff = model.EndDate - model.StartDate;
 
-            decimal totalPrice = (decimal)dateFiff.TotalDays * propertyPrice;
+            decimal totalPrice = 0;
+            if (property.SaleCategoryId == 1)
+            {
+                totalPrice = (decimal)dateFiff.TotalDays * property.Price;
+            }
+            else
+            {
+                int months = (int)(dateFiff.TotalDays % 30);
+                totalPrice = months * property.Price;
+            }
 
             PropertiesRents entity = new PropertiesRents()
             {

@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using RealEstate.Core.Queries.Cities;
 using RealEstate.Core.Queries.Properties;
 
 namespace RealEstate.Controllers
@@ -12,6 +13,17 @@ namespace RealEstate.Controllers
         public HomeController(IMediator mediator)
         {
             _mediator = mediator;
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Route("cities")]
+        public async Task<IActionResult> GetCities()
+        {
+            var cities = await _mediator.Send(new GetCitiesQuery());
+
+            return Ok(cities);
         }
 
         [HttpGet]
