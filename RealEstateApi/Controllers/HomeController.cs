@@ -6,6 +6,7 @@
     using Core.Queries.Properties;
     using Core.Queries.PropertyCategories;
     using Core.Queries.SaleCategories;
+    using RealEstate.Core.Models.Property;
 
     [Route("api/home")]
     [ApiController]
@@ -50,12 +51,13 @@
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [Route("all")]
-        public async Task<IActionResult> GetAllProperties([FromQuery] string saleCategory = "Rent", [FromQuery] string propertyCateogry = "Apartment")
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Route("properties")]
+        public async Task<IActionResult> GetAllProperties([FromQuery] FilterPropertyModel filterModel)
         {
-            var result = await _mediator.Send(new GetTopTenPropertiesQuery(propertyCateogry, saleCategory));
+            var properties = await _mediator.Send(new GetFilteredPropertiesQuery(filterModel));
 
-            return Ok(result);
+            return Ok(properties);
         }
     }
 }

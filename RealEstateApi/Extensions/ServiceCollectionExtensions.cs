@@ -131,7 +131,7 @@
             services.AddTransient<GlobalExceptionHandler>();
             services.AddMediatR(cfg =>
             {
-                cfg.RegisterServicesFromAssemblies(new Assembly[] { typeof(Program).Assembly, typeof(RealEstate.Core.Handlers.Properties.GetTopTenPropertiesHandler).Assembly});
+                cfg.RegisterServicesFromAssemblies(new Assembly[] { typeof(Program).Assembly, typeof(RealEstate.Core.Handlers.Properties.GetFilteredPropertiesHandler).Assembly});
             });
 
             return services;
