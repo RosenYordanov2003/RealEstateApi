@@ -1,11 +1,12 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using RealEstate.Core.Queries.Cities;
-using RealEstate.Core.Queries.Properties;
-using RealEstate.Core.Queries.SaleCategories;
-
-namespace RealEstate.Controllers
+﻿namespace RealEstate.Controllers
 {
+    using MediatR;
+    using Microsoft.AspNetCore.Mvc;
+    using Core.Queries.Cities;
+    using Core.Queries.Properties;
+    using Core.Queries.PropertyCategories;
+    using Core.Queries.SaleCategories;
+
     [Route("api/home")]
     [ApiController]
     public class HomeController : ControllerBase
@@ -42,7 +43,9 @@ namespace RealEstate.Controllers
         [Route("propertyCategories")]
         public async Task<IActionResult> GetPropertyCategories()
         {
+            var propertyCategories = await _mediator.Send(new GetPropertyCategoriesQuery());
 
+            return Ok(propertyCategories);
         }
 
         [HttpGet]
