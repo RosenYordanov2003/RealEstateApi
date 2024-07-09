@@ -172,12 +172,12 @@
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost]
-        [Route("rent")]
+        [Route("airbnb")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Rent([FromBody] PropertyRentModel model)
+        public async Task<IActionResult> Rent([FromBody] BookPropertyModel model)
         {
             bool isPropertyExists = await _mediator.Send(new CheckIfPropertyExistsQuery(model.Id));
             if (!isPropertyExists)
@@ -197,22 +197,21 @@
             {
                 return BadRequest(new PropertyBaseResponseModel(false, "Property is already rented for that period"));
             }
-
             Guid userId = await _mediator.Send(new GetUserIdQuery(User.GetUserName()));
-            await _mediator.Send(new RentPropertyCommand(model, userId));
+            await _mediator.Send(new BookPropertyCommand(model, userId));
 
             return Ok(new PropertyBaseResponseModel(true, null));
         }
 
         [HttpPatch]
-        [Route("edit {propertyId}")]
+        [Route("edit")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Edit([FromQuery] Guid propertyId)
+        public async Task<IActionResult> Edit([FromQuery] EditPropertyModel model)
         {
-            bool isPropertyExists = await _mediator.Send(new CheckIfPropertyExistsQuery(propertyId));
+            bool isPropertyExists = await _mediator.Send(new CheckIfPropertyExistsQuery(model.Id));
             if (!isPropertyExists)
             {
                 return NotFound(new PropertyBaseResponseModel(false, "Property does not exist"));
@@ -220,13 +219,15 @@
             string username = User.GetUserName();
             Guid userId = await _mediator.Send(new GetUserIdQuery(username));
 
-            bool isOwnedByUser = await _mediator.Send(new CheckIfUserOwnsPropertyQuery(userId, propertyId));
+            bool isOwnedByUser = await _mediator.Send(new CheckIfUserOwnsPropertyQuery(userId, model.Id));
             if (!isOwnedByUser)
             {
                 return BadRequest(new PropertyBaseResponseModel(false, "User dosen't own that property"));
             }
 
-            await _mediator
+            await _mediator.Send(new EditPropertyCommand(model));
+
+            return Ok(new PropertyBaseResponseModel(true, null));
         }
     }
 }

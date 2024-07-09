@@ -30,7 +30,7 @@
                    BedRoomsCount = 3,
                    Address = "квартал Витоша",
                    Name = "Тристаен Апартамент",
-                   SaleCategoryId = 2,
+                   SaleCategoryId = 1,
                    Price = 900,
                    PropertyCategoryId =  2,
                    SquareMeters = 104,

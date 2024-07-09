@@ -6,15 +6,15 @@
     using Data.Repositories.Contracts;
     using Data.Data.Models;
 
-    public class RentPropertyHandler : IRequestHandler<RentPropertyCommand>
+    public class BookPropertyHandler : IRequestHandler<BookPropertyCommand>
     {
         private readonly IUnitOfWork _unitOfWork;
-        public RentPropertyHandler(IUnitOfWork unitOfWork)
+        public BookPropertyHandler(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
 
-        public async Task Handle(RentPropertyCommand request, CancellationToken cancellationToken)
+        public async Task Handle(BookPropertyCommand request, CancellationToken cancellationToken)
         {
             var model = request.model;
             Property property = await _unitOfWork.
@@ -24,16 +24,6 @@
 
             TimeSpan dateFiff = model.EndDate - model.StartDate;
 
-            decimal totalPrice = 0;
-            if (property.SaleCategoryId == 1)
-            {
-                totalPrice = (decimal)dateFiff.TotalDays * property.Price;
-            }
-            else
-            {
-                int months = (int)(dateFiff.TotalDays % 30);
-                totalPrice = months * property.Price;
-            }
 
             PropertiesRents entity = new PropertiesRents()
             {
@@ -41,7 +31,7 @@
                 EndDate = model.EndDate,
                 PropertyId = model.Id,
                 UserId = request.userId,
-                TotalPrice =  totalPrice,
+                TotalPrice = (decimal)dateFiff.TotalDays * property.Price
             };
 
             await _unitOfWork.Repository<PropertiesRents>().AddAsync(entity);

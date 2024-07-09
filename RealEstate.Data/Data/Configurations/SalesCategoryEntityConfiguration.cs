@@ -19,14 +19,9 @@
             SaleCategory category1 = new SaleCategory()
             {
                 Id = 1,
-                Name = "Rbnb",
+                Name = "airbnb",
             };
             SaleCategory category2 = new SaleCategory()
-            {
-                Id = 2,
-                Name = "Rent",
-            };
-            SaleCategory category3 = new SaleCategory()
             {
                 Id = 3,
                 Name = "Sale",
@@ -34,7 +29,6 @@
 
             categories.Add(category1);
             categories.Add(category2);
-            categories.Add(category3);
 
             return categories;
         }
