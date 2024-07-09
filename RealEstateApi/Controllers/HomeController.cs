@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using RealEstate.Core.Queries.Cities;
 using RealEstate.Core.Queries.Properties;
+using RealEstate.Core.Queries.SaleCategories;
 
 namespace RealEstate.Controllers
 {
@@ -24,6 +25,24 @@ namespace RealEstate.Controllers
             var cities = await _mediator.Send(new GetCitiesQuery());
 
             return Ok(cities);
+        }
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Route("saleCategories")]
+        public async Task<IActionResult> GetSalesCategories()
+        {
+            var salesCategories = await _mediator.Send(new GetSaleCategoriesQuery());
+
+            return Ok(salesCategories);
+        }
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Route("propertyCategories")]
+        public async Task<IActionResult> GetPropertyCategories()
+        {
+
         }
 
         [HttpGet]
