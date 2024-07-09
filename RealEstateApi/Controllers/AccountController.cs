@@ -7,7 +7,7 @@
     using Responses.Account;
     using Data.Data.Models;
     using Core.Models.Account;
-    using RealEstate.Core.Contracts;
+    using Core.Contracts;
 
     [Route("api/account")]
     [ApiController]
@@ -27,7 +27,7 @@
         [Route("register")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        //[ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
             if (!ModelState.IsValid)
@@ -63,6 +63,7 @@
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
             User user = await _userManager.FindByNameAsync(model.Username);

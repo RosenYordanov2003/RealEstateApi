@@ -203,5 +203,30 @@
 
             return Ok(new PropertyBaseResponseModel(true, null));
         }
+
+        [HttpPatch]
+        [Route("edit {propertyId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Edit([FromQuery] Guid propertyId)
+        {
+            bool isPropertyExists = await _mediator.Send(new CheckIfPropertyExistsQuery(propertyId));
+            if (!isPropertyExists)
+            {
+                return NotFound(new PropertyBaseResponseModel(false, "Property does not exist"));
+            }
+            string username = User.GetUserName();
+            Guid userId = await _mediator.Send(new GetUserIdQuery(username));
+
+            bool isOwnedByUser = await _mediator.Send(new CheckIfUserOwnsPropertyQuery(userId, propertyId));
+            if (!isOwnedByUser)
+            {
+                return BadRequest(new PropertyBaseResponseModel(false, "User dosen't own that property"));
+            }
+
+            await _mediator
+        }
     }
 }

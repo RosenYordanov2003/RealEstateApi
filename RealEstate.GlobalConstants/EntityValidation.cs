@@ -19,6 +19,9 @@
             public const int ADDRESS_MAX_LENGTH = 110;
 
             public const int DESCRIPTION_MAX_LENGTH = 800;
+
+            public const int PROPERTY_MIN_FLOOR_VALUE = 1;
+            public const int PROPERTY_MAX_FLOOR_VALUE = 100;
         }
     }
 }

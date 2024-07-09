@@ -22,7 +22,7 @@
             return await
                _unitOfWork.Repository<Property>()
               .GetAll(false,
-               p => p.OwnerId == request.userId, p => p.OrderByDescending(x => x.SquareMeters))
+               p => p.OwnerId == request.userId)
               .Select(p => new PropertyModel()
               {
                   Address = p.Address,
