@@ -22,6 +22,12 @@
 
             public const int PROPERTY_MIN_FLOOR_VALUE = 1;
             public const int PROPERTY_MAX_FLOOR_VALUE = 100;
+
+            public const int BEDROOM_MIN_VALUE = 1;
+            public const int BEDROOM_MAX_VALUE = 30;
+
+            public const int BATHROOM_MIN_VALUE = 1;
+            public const int BATHROOM_MAX_VALUE = 20;
         }
     }
 }

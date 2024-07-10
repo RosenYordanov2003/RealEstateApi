@@ -10,6 +10,7 @@
     using Core.Models.Property;
     using Core.Commands.Properties;
     using Extensions;
+    using RealEstate.Responses.Account;
 
     [Route("api/properties")]
     [ApiController]
@@ -228,6 +229,29 @@
             await _mediator.Send(new EditPropertyCommand(model));
 
             return Ok(new PropertyBaseResponseModel(true, null));
+        }
+
+        [HttpPost]
+        [Route("create")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Create([FromForm] CreatePropertyModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                List<string> errors = ModelState.Values.SelectMany(v => v.Errors).Select(x => x.ErrorMessage).ToList();
+                return BadRequest(new PropertyBaseResponseModel(false, string.Join(" ", errors)));
+            }
+            string username = User.GetUserName();
+            Guid userId = await _mediator.Send(new GetUserIdQuery(username));
+            Guid propertyId = await _mediator.Send(new CreatePropertyCommand(model, userId));
+
+            foreach (var file in model.Files)
+            {
+                await 
+            }
+            return Created(string.Empty, 1);
         }
     }
 }

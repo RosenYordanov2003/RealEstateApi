@@ -32,4 +32,8 @@
     <ProjectReference Include="..\RealEstate.Data\RealEstate.Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
 </Project>
