@@ -11,15 +11,18 @@
     using Core.Commands.Properties;
     using Extensions;
     using RealEstate.Responses.Account;
+    using RealEstate.Core.Commands.Pictures;
 
     [Route("api/properties")]
     [ApiController]
     public class PropertyController : ControllerBase
     {
         private readonly IMediator _mediator;
-        public PropertyController(IMediator mediator)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        public PropertyController(IMediator mediator, IWebHostEnvironment webHostEnvironment)
         {
             _mediator = mediator;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         [HttpGet("{Id}")]
@@ -234,6 +237,7 @@
         [HttpPost]
         [Route("create")]
         [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status200OK)] //Temporary
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Create([FromForm] CreatePropertyModel model)
@@ -249,9 +253,9 @@
 
             foreach (var file in model.Files)
             {
-                await 
+                await _mediator.Send(new CreatePictureCommand(_webHostEnvironment.WebRootPath, file, propertyId));
             }
-            return Created(string.Empty, 1);
+            return Ok();
         }
     }
 }

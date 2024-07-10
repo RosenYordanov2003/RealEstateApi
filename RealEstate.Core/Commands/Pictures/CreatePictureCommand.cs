@@ -3,5 +3,5 @@
     using MediatR;
     using Microsoft.AspNetCore.Http;
 
-    public record CreatePictureCommand(string path, IFormFile file) : IRequest;
+    public record CreatePictureCommand(string path, IFormFile file, Guid propertyId) : IRequest;
 }
