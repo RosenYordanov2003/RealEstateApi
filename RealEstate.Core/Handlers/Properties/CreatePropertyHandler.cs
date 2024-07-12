@@ -4,7 +4,7 @@
     using Commands.Properties;
     using Data.Repositories.Contracts;
     using Models.Property;
-    using RealEstate.Data.Data.Models;
+    using Data.Data.Models;
 
     public class CreatePropertyHandler : IRequestHandler<CreatePropertyCommand, Guid>
     {

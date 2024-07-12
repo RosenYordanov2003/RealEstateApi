@@ -10,8 +10,8 @@
     using Core.Models.Property;
     using Core.Commands.Properties;
     using Extensions;
-    using RealEstate.Responses.Account;
-    using RealEstate.Core.Commands.Pictures;
+    using Core.Commands.Pictures;
+    using Data.Data.Models;
 
     [Route("api/properties")]
     [ApiController]
@@ -25,7 +25,7 @@
             _webHostEnvironment = webHostEnvironment;
         }
 
-        [HttpGet("{Id}")]
+        [HttpGet("{Id}", Name = "details")]   
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -209,27 +209,29 @@
 
         [HttpPatch]
         [Route("edit")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Edit([FromQuery] EditPropertyModel model)
+        public async Task<IActionResult> Edit([FromBody] EditPropertyModel model, [FromQuery] Guid id)
         {
-            bool isPropertyExists = await _mediator.Send(new CheckIfPropertyExistsQuery(model.Id));
-            if (!isPropertyExists)
-            {
-                return NotFound(new PropertyBaseResponseModel(false, "Property does not exist"));
-            }
+            bool isPropertyExists = await _mediator.Send(new CheckIfPropertyExistsQuery(id));
             string username = User.GetUserName();
+
+            if (!isPropertyExists || string.IsNullOrWhiteSpace(username))
+            {
+                return NotFound(new PropertyBaseResponseModel(false, "Property or User do not exist"));
+            }
             Guid userId = await _mediator.Send(new GetUserIdQuery(username));
 
-            bool isOwnedByUser = await _mediator.Send(new CheckIfUserOwnsPropertyQuery(userId, model.Id));
+            bool isOwnedByUser = await _mediator.Send(new CheckIfUserOwnsPropertyQuery(userId, id));
             if (!isOwnedByUser)
             {
                 return BadRequest(new PropertyBaseResponseModel(false, "User dosen't own that property"));
             }
 
-            await _mediator.Send(new EditPropertyCommand(model));
+            await _mediator.Send(new EditPropertyCommand(model, id));
 
             return Ok(new PropertyBaseResponseModel(true, null));
         }
@@ -237,7 +239,6 @@
         [HttpPost]
         [Route("create")]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status200OK)] //Temporary
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -251,13 +252,15 @@
             }
             string username = User.GetUserName();
             Guid userId = await _mediator.Send(new GetUserIdQuery(username));
-            Guid propertyId = await _mediator.Send(new CreatePropertyCommand(model, userId));
+            Guid id = await _mediator.Send(new CreatePropertyCommand(model, userId));
+
 
             foreach (var file in model.Files)
             {
-                await _mediator.Send(new CreatePictureCommand(_webHostEnvironment.WebRootPath, file, propertyId));
+                await _mediator.Send(new CreatePictureCommand(_webHostEnvironment.WebRootPath, file, id));
             }
-            return Ok();
+            PropertyDetailsModel detailsModel = await _mediator.Send(new GetPropertyByIdQuery(id));
+            return CreatedAtRoute("details", new {Id =  id}, detailsModel);
         }
     }
 }

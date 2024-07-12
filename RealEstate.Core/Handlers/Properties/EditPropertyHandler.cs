@@ -23,7 +23,7 @@
 
             Property propertyToUpdate = await _unitOfWork
                 .Repository<Property>()
-                .GetByAsync(p => p.Id == model.Id)
+                .GetByAsync(p => p.Id == request.id)
                 .FirstAsync();
 
             propertyToUpdate.CityId = model.CityId;

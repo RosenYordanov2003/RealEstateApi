@@ -4,7 +4,6 @@
     using static GlobalConstants.EntityValidation.PropertyValidation;
     public abstract class PropertyBaseModel
     {
-        public Guid Id { get; set; }
 
         [Required]
         [MaxLength(NAME_MAX_LENGTH)]

@@ -2,6 +2,6 @@
 {
     using MediatR;
     using Models.Property;
-    public record EditPropertyCommand(EditPropertyModel model) : IRequest;
+    public record EditPropertyCommand(EditPropertyModel model, Guid id) : IRequest;
    
 }

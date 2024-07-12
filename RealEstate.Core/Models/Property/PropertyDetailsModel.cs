@@ -2,7 +2,7 @@
 {
     using Pictures;
 
-    public class PropertyDetailsModel : PropertyBaseModel
+    public class PropertyDetailsModel : PropertyModel
     {
         public PropertyDetailsModel()
         {
@@ -12,6 +12,5 @@
         public string? Description { get; set; }
         public decimal Latitude { get; set; }
         public decimal Longitude { get; set; }
-        public string City { get; set; } = null!;
     }
 }
