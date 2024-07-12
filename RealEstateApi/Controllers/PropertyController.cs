@@ -240,6 +240,8 @@
         [ProducesResponseType(StatusCodes.Status200OK)] //Temporary
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+
         public async Task<IActionResult> Create([FromForm] CreatePropertyModel model)
         {
             if (!ModelState.IsValid)
