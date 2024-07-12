@@ -13,6 +13,7 @@
     using Core.Services;
     using System.Reflection;
     using Middlewares;
+    using Asp.Versioning;
 
     public static class ServiceCollectionExtensions
     {
@@ -134,6 +135,23 @@
                 cfg.RegisterServicesFromAssemblies(new Assembly[] { typeof(Program).Assembly, typeof(RealEstate.Core.Handlers.Properties.GetFilteredPropertiesHandler).Assembly});
             });
 
+            return services;
+        }
+        public static IServiceCollection AddVersioning(this IServiceCollection services)
+        {
+            services.AddApiVersioning(opt =>
+            {
+                opt.AssumeDefaultVersionWhenUnspecified = true;
+                opt.DefaultApiVersion = new ApiVersion(1, 0);
+                opt.ReportApiVersions = true;
+                opt.ApiVersionReader = new UrlSegmentApiVersionReader();
+            })
+                .AddMvc()
+                .AddApiExplorer(opt =>
+                {
+                    opt.GroupNameFormat = "'v'V";
+                    opt.SubstituteApiVersionInUrl = true;
+                });
             return services;
         }
     }

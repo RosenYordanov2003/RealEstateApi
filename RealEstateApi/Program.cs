@@ -17,7 +17,7 @@ var aud = builder.Configuration.GetSection("Jwt:ValidAudience").Get<string>();
 builder.Services.AddJwtAuthentication(issuer, aud, jwtKey);
 builder.Services.AddIdentity();
 builder.Services.AddCorsConfiguration();
-
+builder.Services.AddVersioning();
 builder.Services.AddApplicationCookieConfiguration();
 
 builder.Services.AddControllers();

@@ -3,6 +3,7 @@
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
+    using Asp.Versioning;
     using MediatR;
     using Core.Queries.Properties;
     using Core.Queries.Users;
@@ -11,9 +12,10 @@
     using Core.Commands.Properties;
     using Extensions;
     using Core.Commands.Pictures;
-    using Data.Data.Models;
 
-    [Route("api/properties")]
+    [ApiVersion(1)]
+    [ApiVersion(2)]
+    [Route("api/v{v:apiVersion}/properties")]
     [ApiController]
     public class PropertyController : ControllerBase
     {
@@ -24,7 +26,6 @@
             _mediator = mediator;
             _webHostEnvironment = webHostEnvironment;
         }
-
         [HttpGet("{Id}", Name = "details")]   
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -41,8 +42,8 @@
             var propertyModel = await _mediator.Send(new GetPropertyByIdQuery(Id));
             return Ok(propertyModel);
         }
-
-        [HttpGet("getUserProperties{userId}")]
+        [MapToApiVersion(2)]
+        [HttpGet("user{userId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
