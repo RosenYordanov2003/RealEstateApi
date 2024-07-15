@@ -24,7 +24,7 @@
 
         private IEnumerable<Property> SeedProperties()
         {
-           List<Property> properties = new List<Property>()
+            List<Property> properties = new List<Property>()
            {
                new Property()
                {
@@ -39,7 +39,7 @@
                    PropertyCategoryId =  2,
                    SquareMeters = 104,
                    FloorNumber = 2,
-                   Location = new Point(42.64060043988789, 23.3237116807640 ){SRID = DEFAULT_SRID},
+                   Location = new Point(23.270974910391605, 42.71034632312068){SRID = DEFAULT_SRID}, //X : longitude Y : lattitude
                    Description = "Тристаен апартамент в новострояща се сграда разположен е на втори жилищен етаж. Състои се от: коридор, всекидневна с кухненски бокс и тераса,   две спални, едната с гардеробна и собствена баня с тоалетна,   баня с тоалетна и тераса. Жилището се издава  на шпакловка и замазка, с външни врати с многоточково заключване, ВиК до тапа, електрозахранване по проект. Сградата ще бъде присъединена към Газификационна мрежа.",
                    OwnerId = Guid.Parse("E7D6EE68-2A6D-4A1A-B640-B26FCEB74254")
                }

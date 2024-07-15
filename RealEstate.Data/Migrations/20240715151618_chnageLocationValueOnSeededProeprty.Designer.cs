@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NetTopologySuite.Geometries;
 using RealEstate.Data.Data;
@@ -12,9 +13,10 @@ using RealEstate.Data.Data;
 namespace RealEstate.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240715151618_chnageLocationValueOnSeededProeprty")]
+    partial class chnageLocationValueOnSeededProeprty
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -319,7 +321,7 @@ namespace RealEstate.Data.Migrations
                             Description = "Тристаен апартамент в новострояща се сграда разположен е на втори жилищен етаж. Състои се от: коридор, всекидневна с кухненски бокс и тераса,   две спални, едната с гардеробна и собствена баня с тоалетна,   баня с тоалетна и тераса. Жилището се издава  на шпакловка и замазка, с външни врати с многоточково заключване, ВиК до тапа, електрозахранване по проект. Сградата ще бъде присъединена към Газификационна мрежа.",
                             FloorNumber = 2,
                             IsDeleted = false,
-                            Location = (NetTopologySuite.Geometries.Point)new NetTopologySuite.IO.WKTReader().Read("SRID=4326;POINT (23.270974910391605 42.71034632312068)"),
+                            Location = (NetTopologySuite.Geometries.Point)new NetTopologySuite.IO.WKTReader().Read("SRID=4326;POINT (23.323711680764 42.64060043988789)"),
                             Name = "Тристаен Апартамент",
                             OwnerId = new Guid("e7d6ee68-2a6d-4a1a-b640-b26fceb74254"),
                             Price = 900m,
@@ -464,15 +466,15 @@ namespace RealEstate.Data.Migrations
                         {
                             Id = new Guid("e7d6ee68-2a6d-4a1a-b640-b26fceb74254"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "7863b74c-c19c-497f-a2df-a82e0ef66a42",
+                            ConcurrencyStamp = "1df01562-57ab-4374-b412-aad4ad311c9f",
                             Email = "bobi123@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "BOBI123@GMAIL.COM",
                             NormalizedUserName = "BOBI",
-                            PasswordHash = "AQAAAAEAACcQAAAAEDPbP04C/1LGDER45dHwXETQn7rTcrCtLcU68puvddrqwd+pG5nfGW2RjiYSo5ZnVw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEC0Yd3n7uhj1kj7VQ2l9BjXoAQtFo2umEvqo7mXV5J5DDQqMmjGAQuskmUnz7QgR2A==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "65c95722-c9ed-498a-a65a-2806463a9dd1",
+                            SecurityStamp = "d7eb0044-7fe2-49dd-9699-4e22f2b2fc9c",
                             TwoFactorEnabled = false,
                             UserName = "Bobi"
                         });

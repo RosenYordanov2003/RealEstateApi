@@ -267,8 +267,11 @@
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
 
-        public IActionResult GetPropertiesNearby20Km([FromQuery] double latitude, [FromQuery] double longitude)
+        public async Task<IActionResult> GetPropertiesNearby5Km([FromQuery] double latitude, [FromQuery] double longitude)
         {
+            var properties = await _mediator.Send(new GetPropertiesNearby5KmQuery(latitude, longitude));
+
+            return Ok(properties);
         }
     }
 }
