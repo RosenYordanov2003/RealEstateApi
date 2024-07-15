@@ -1,5 +1,6 @@
 ﻿namespace RealEstate.Data.Data.Models
 {
+    using NetTopologySuite.Geometries;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     using static GlobalConstants.EntityValidation.PropertyValidation;
@@ -16,10 +17,7 @@
         public Guid Id { get; set; }
         public int BedRoomsCount { get; set; }
         public int BathRoomsCount { get; set; }
-        [Column(TypeName = "decimal(17, 15)")]
-        public decimal Latitude { get; set; }
-        [Column(TypeName = "decimal(17, 15)")]
-        public decimal Longitude { get; set; }
+        public Point Location { get; set; }
         public decimal SquareMeters { get; set; }
         public int FloorNumber { get; set; }
         [Required]

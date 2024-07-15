@@ -19,11 +19,11 @@
             SaleCategory category1 = new SaleCategory()
             {
                 Id = 1,
-                Name = "airbnb",
+                Name = "Airbnb",
             };
             SaleCategory category2 = new SaleCategory()
             {
-                Id = 3,
+                Id = 2,
                 Name = "Sale",
             };
 

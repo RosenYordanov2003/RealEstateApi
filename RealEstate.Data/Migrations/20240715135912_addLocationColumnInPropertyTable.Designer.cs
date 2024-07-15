@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NetTopologySuite.Geometries;
 using RealEstate.Data.Data;
@@ -12,9 +13,10 @@ using RealEstate.Data.Data;
 namespace RealEstate.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240715135912_addLocationColumnInPropertyTable")]
+    partial class addLocationColumnInPropertyTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -385,11 +387,11 @@ namespace RealEstate.Data.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Airbnb"
+                            Name = "airbnb"
                         },
                         new
                         {
-                            Id = 2,
+                            Id = 3,
                             Name = "Sale"
                         });
                 });
@@ -464,15 +466,15 @@ namespace RealEstate.Data.Migrations
                         {
                             Id = new Guid("e7d6ee68-2a6d-4a1a-b640-b26fceb74254"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f2f2abc7-38ab-42f9-88a9-debbc3b717ff",
+                            ConcurrencyStamp = "5cbe4247-0dc3-4587-a8ad-1c33091f22d6",
                             Email = "bobi123@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "BOBI123@GMAIL.COM",
                             NormalizedUserName = "BOBI",
-                            PasswordHash = "AQAAAAEAACcQAAAAEFENKwiw/8gdXcpVourKc/2LDhIz1Sg8a/8gDHVjwRPPvcvTsHfLg9SFzyllfDP1Ew==",
+                            PasswordHash = "AQAAAAEAACcQAAAAENlETdnfAjV96dFQqEFq3Xu/bLc7ic4XUHmcb6CWPJveRbCth+vr79KhtabmGhDMtA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "2685a5d8-6030-486f-9c5b-e638477e7841",
+                            SecurityStamp = "31eac542-7609-4c96-87af-4ef534374036",
                             TwoFactorEnabled = false,
                             UserName = "Bobi"
                         });

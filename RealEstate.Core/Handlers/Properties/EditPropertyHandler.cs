@@ -8,6 +8,8 @@
     using Data.Repositories.Contracts;
     using Data.Data.Models;
     using Models.Property;
+    using NetTopologySuite.Geometries;
+    using static GlobalConstants.ApplicationConstants;
 
     public class EditPropertyHandler : IRequestHandler<EditPropertyCommand>
     {
@@ -29,8 +31,7 @@
             propertyToUpdate.CityId = model.CityId;
             propertyToUpdate.Address = model.Address;
             propertyToUpdate.FloorNumber = model.FloorNumber;
-            propertyToUpdate.Longitude = model.Longitude;
-            propertyToUpdate.Latitude = model.Latitude;
+            propertyToUpdate.Location = new Point(model.Longitude, model.Latitude) {SRID = DEFAULT_SRID};
             propertyToUpdate.Price = model.Price;
             propertyToUpdate.BathRoomsCount = model.BathRoomsCount;
             propertyToUpdate.BedRoomsCount = model.BedRoomsCount;

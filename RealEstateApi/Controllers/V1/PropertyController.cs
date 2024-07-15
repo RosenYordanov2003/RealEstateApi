@@ -261,5 +261,14 @@
             PropertyDetailsModel detailsModel = await _mediator.Send(new GetPropertyByIdQuery(id));
             return CreatedAtRoute("details", new { Id = id }, detailsModel);
         }
+
+        [HttpGet]
+        [Route("nearby20km")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+
+        public IActionResult GetPropertiesNearby20Km([FromQuery] double latitude, [FromQuery] double longitude)
+        {
+        }
     }
 }

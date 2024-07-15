@@ -7,8 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-           options.UseSqlServer(connectionString));
+builder.Services.AddDbContext<ApplicationDbContext>
+    (options => options.UseSqlServer(connectionString, x => x.UseNetTopologySuite()));
 
 var jwtKey = builder.Configuration.GetSection("Jwt:Key").Get<string>();
 var issuer = builder.Configuration.GetSection("Jwt:ValidIssuer").Get<string>();

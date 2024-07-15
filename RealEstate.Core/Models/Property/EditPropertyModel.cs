@@ -7,8 +7,8 @@
         public int CityId { get; set; }
         [MaxLength(DESCRIPTION_MAX_LENGTH)]
         public string? Description { get; set; }
-        public decimal Latitude { get; set; }
-        public decimal Longitude { get; set; }
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
 
         [Range(minimum: PROPERTY_MIN_FLOOR_VALUE, maximum: PROPERTY_MAX_FLOOR_VALUE)]
         public int FloorNumber { get; set; }

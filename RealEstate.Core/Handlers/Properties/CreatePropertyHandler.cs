@@ -5,6 +5,8 @@
     using Data.Repositories.Contracts;
     using Models.Property;
     using Data.Data.Models;
+    using NetTopologySuite.Geometries;
+    using static GlobalConstants.ApplicationConstants;
 
     public class CreatePropertyHandler : IRequestHandler<CreatePropertyCommand, Guid>
     {
@@ -29,8 +31,7 @@
                 Address = model.Address,
                 Description = model.Description,
                 FloorNumber = model.FloorNumber,
-                Latitude = model.Latitude,
-                Longitude = model.Longitude,
+                Location = new Point(model.Longitude, model.Latitude) { SRID = DEFAULT_SRID },
                 IsDeleted = false,
                 Price = model.Price,
                 SquareMeters = model.SquareMeters,
