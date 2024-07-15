@@ -1,19 +1,22 @@
 ﻿namespace RealEstate.Extensions
 {
     using System.Text;
+    using System.Reflection;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.IdentityModel.Tokens;
     using Microsoft.OpenApi.Models;
+    using Microsoft.Extensions.Options;
+    using Asp.Versioning;
+    using Swashbuckle.AspNetCore.SwaggerGen;
+    using Middlewares;
     using Data.Data.Models;
     using Data.Data;
     using Data.Repositories.Contracts;
     using Data.Repositories;
     using Core.Contracts;
     using Core.Services;
-    using System.Reflection;
-    using Middlewares;
-    using Asp.Versioning;
+    using RealEstate.SwaggerConfig;
 
     public static class ServiceCollectionExtensions
     {
@@ -130,6 +133,9 @@
             services.AddScoped<IPropertyService, PropertyService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddTransient<GlobalExceptionHandler>();
+            services.AddVersioning();
+            services.AddTransient<IConfigureOptions<SwaggerGenOptions>, SwaggerConfigOptions>();
+            services.AddSwaggerGen();
             services.AddMediatR(cfg =>
             {
                 cfg.RegisterServicesFromAssemblies(new Assembly[] { typeof(Program).Assembly, typeof(RealEstate.Core.Handlers.Properties.GetFilteredPropertiesHandler).Assembly});
@@ -152,6 +158,7 @@
                     opt.GroupNameFormat = "'v'V";
                     opt.SubstituteApiVersionInUrl = true;
                 });
+
             return services;
         }
     }

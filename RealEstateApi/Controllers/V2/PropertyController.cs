@@ -1,21 +1,21 @@
-﻿namespace RealEstate.Controllers
+﻿namespace RealEstate.Controllers.V2
 {
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Asp.Versioning;
     using MediatR;
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Mvc;
+    using Core.Commands.Pictures;
+    using Core.Commands.Properties;
+    using Core.Models.Property;
     using Core.Queries.Properties;
     using Core.Queries.Users;
-    using Responses.Properties;
-    using Core.Models.Property;
-    using Core.Commands.Properties;
     using Extensions;
-    using Core.Commands.Pictures;
+    using Responses.Properties;
 
-    [ApiVersion(1)]
-    [ApiVersion(2)]
-    [Route("api/v{v:apiVersion}/properties")]
+
+    [ApiVersion("2.0")]
+    [Route("api/v{version:apiversion}/properties")]
     [ApiController]
     public class PropertyController : ControllerBase
     {
@@ -26,23 +26,16 @@
             _mediator = mediator;
             _webHostEnvironment = webHostEnvironment;
         }
-        [HttpGet("{Id}", Name = "details")]   
+        [HttpGet]
+        [Route("details")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
 
-        public async Task<IActionResult> GetProperty(Guid Id)
+        public async Task<IActionResult> GetProperty()
         {
-            bool result = await _mediator.Send(new CheckIfPropertyExistsQuery(Id));
-
-            if (!result)
-            {
-                return BadRequest();
-            }
-            var propertyModel = await _mediator.Send(new GetPropertyByIdQuery(Id));
-            return Ok(propertyModel);
+            return Ok("Hello");
         }
-        [MapToApiVersion(2)]
         [HttpGet("user{userId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -261,7 +254,7 @@
                 await _mediator.Send(new CreatePictureCommand(_webHostEnvironment.WebRootPath, file, id));
             }
             PropertyDetailsModel detailsModel = await _mediator.Send(new GetPropertyByIdQuery(id));
-            return CreatedAtRoute("details", new {Id =  id}, detailsModel);
+            return CreatedAtRoute("details", new { Id = id }, detailsModel);
         }
     }
 }

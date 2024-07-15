@@ -17,18 +17,13 @@ var aud = builder.Configuration.GetSection("Jwt:ValidAudience").Get<string>();
 builder.Services.AddJwtAuthentication(issuer, aud, jwtKey);
 builder.Services.AddIdentity();
 builder.Services.AddCorsConfiguration();
-builder.Services.AddVersioning();
 builder.Services.AddApplicationCookieConfiguration();
-
 builder.Services.AddControllers();
 builder.Services.AddAuthorization();
 
 builder.Services.AddServices();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-//builder.Services.AddSwaggerGen();
-
-builder.Services.AddSwaggerConfiguration();
 
 
 var app = builder.Build();
@@ -37,7 +32,18 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        var descriptions = app.DescribeApiVersions();
+
+        // Build a swagger endpoint for each discovered API version
+        foreach (var description in descriptions)
+        {
+            var url = $"/swagger/{description.GroupName}/swagger.json";
+            var name = description.GroupName.ToUpperInvariant();
+            options.SwaggerEndpoint(url, name);
+        }
+    });
 }
 
 app.UseHttpsRedirection();
