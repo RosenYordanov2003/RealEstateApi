@@ -73,20 +73,19 @@
 
             using (var writer = new StreamWriter(csvOutputFilePath))
             {
-                // Записване на заглавката в CSV файла
                 writer.WriteLine("name,latitude,longitude");
 
                 foreach (var element in elements)
                 {
                     var tags = element["tags"];
-                    string name = tags?["name"]?.ToString();
+                    string? name = tags?["name"]?.ToString();
 
                     if (!string.IsNullOrEmpty(name))
                     {
                         string lat = element["lat"]?.ToString() ?? "";
                         string lon = element["lon"]?.ToString() ?? "";
 
-                        // Проверка за 'way', за да вземем координатите от geometry
+                       
                         if (element["type"].ToString() == "way")
                         {
                             var geometry = element["geometry"];
@@ -101,9 +100,13 @@
                     }
                 }
             }
-
-            Console.WriteLine("Конвертирането завърши успешно.");
             return Ok();
         }
+        //[HttpPost]
+        //public async Task<IActionResult> InsertSchoolAmenities()
+        //{
+        //    string csvOutputFilePath = "C:\\Users\\Home\\source\\repos\\RealEstateApi\\RealEstateApi\\schools.csv";
+        //    int amenityCategory = 1;
+        //}
     }
 }
