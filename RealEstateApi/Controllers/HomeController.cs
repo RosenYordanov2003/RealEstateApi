@@ -66,9 +66,7 @@
         [Route("GetJson")]
         public async Task<IActionResult> GetJson()
         {
-            string csvOutputFilePath = "C:\\Users\\Home\\source\\repos\\RealEstateApi\\RealEstateApi\\schools.csv"; // Заменете с пътя към вашия CSV изходен файл
-
-
+            string csvOutputFilePath = "C:\\Users\\Home\\source\\repos\\RealEstateApi\\RealEstateApi\\schools.csv";
             string jsonData = await System.IO.File.ReadAllTextAsync("C:\\Users\\Home\\source\\repos\\RealEstateApi\\RealEstateApi\\schools.json");
             var jsonObject = JObject.Parse(jsonData);
             var elements = jsonObject["elements"];
@@ -81,11 +79,23 @@
                 foreach (var element in elements)
                 {
                     var tags = element["tags"];
-                    if (tags != null && tags["name"] != null)
+                    string name = tags?["name"]?.ToString();
+
+                    if (!string.IsNullOrEmpty(name))
                     {
-                        string name = tags["name"].ToString();
                         string lat = element["lat"]?.ToString() ?? "";
                         string lon = element["lon"]?.ToString() ?? "";
+
+                        // Проверка за 'way', за да вземем координатите от geometry
+                        if (element["type"].ToString() == "way")
+                        {
+                            var geometry = element["geometry"];
+                            if (geometry != null && geometry.HasValues)
+                            {
+                                lat = geometry.First["lat"]?.ToString() ?? "";
+                                lon = geometry.First["lon"]?.ToString() ?? "";
+                            }
+                        }
 
                         writer.WriteLine($"{name},{lat},{lon}");
                     }
