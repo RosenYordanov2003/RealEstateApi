@@ -9,6 +9,7 @@
     using Core.Queries.SaleCategories;
     using RealEstate.Core.Models.Property;
     using Newtonsoft.Json.Linq;
+    using RealEstate.Core.Commands.Amenities;
 
     [Route("api/home")]
     [ApiController]
@@ -82,6 +83,7 @@
 
                     if (!string.IsNullOrEmpty(name))
                     {
+                        name = name.Replace(',', ' ');
                         string lat = element["lat"]?.ToString() ?? "";
                         string lon = element["lon"]?.ToString() ?? "";
 
@@ -102,11 +104,15 @@
             }
             return Ok();
         }
-        //[HttpPost]
-        //public async Task<IActionResult> InsertSchoolAmenities()
-        //{
-        //    string csvOutputFilePath = "C:\\Users\\Home\\source\\repos\\RealEstateApi\\RealEstateApi\\schools.csv";
-        //    int amenityCategory = 1;
-        //}
+        [HttpPost]
+        public async Task<IActionResult> InsertSchoolAmenities()
+        {
+            const string csvPath = "C:\\Users\\Home\\source\\repos\\RealEstateApi\\RealEstateApi\\schools.csv";
+            const int amenityCategoryId = 1;
+
+            await _mediator.Send(new InsertAmenitiesCommand(csvPath, amenityCategoryId));
+
+            return Ok();
+        }
     }
 }
