@@ -3,13 +3,13 @@
     using System.IO;
     using MediatR;
     using Microsoft.AspNetCore.Mvc;
+    using Newtonsoft.Json.Linq;
     using Core.Queries.Cities;
     using Core.Queries.Properties;
     using Core.Queries.PropertyCategories;
     using Core.Queries.SaleCategories;
-    using RealEstate.Core.Models.Property;
-    using Newtonsoft.Json.Linq;
-    using RealEstate.Core.Commands.Amenities;
+    using Core.Models.Property;
+    using Core.Commands.Amenities;
 
     [Route("api/home")]
     [ApiController]
