@@ -24,40 +24,10 @@
 
         public  async Task<PropertyDetailsModel> Handle(GetPropertyByIdQuery request, CancellationToken cancellationToken)
         {
-            PropertyDetailsModel model = await _unitOfWork.Repository<Property>().GetByAsync(x => x.Id == request.id)
-                .Select(x => new PropertyDetailsModel()
-                {
-                    Id = x.Id,
-                    Address = x.Address,
-                    BathRoomsCount = x.BathRoomsCount,
-                    BedRoomsCount = x.BedRoomsCount,
-                    City = x.City.Name,
-                    Description = x.Description,
-                    Latitude = x.Location.Y,
-                    Longitude = x.Location.X,
-                    Name = x.Name,
-                    Price = x.Price,
-                    SquareMeters = x.SquareMeters,
-                    Pictures = x.Pictures.Select(p => new PictureModel() { Id = p.Id, ImgUrl = p.ImgUrl }).ToArray(),
-                })
-                .FirstAsync();
-
-            GeometryFactory factory = NtsGeometryServices.Instance.CreateGeometryFactory(DEFAULT_SRID);
-
-            Point currentLocation = factory.CreatePoint(new Coordinate(model.Longitude, model.Latitude));
-
-            model.Amenities = await _unitOfWork.Repository<Amenity>()
-                .GetAll(false, a => a.Location.IsWithinDistance(currentLocation , DISTANCE_IN_METERS))
-                .Select(a => new AmenityModel()
-                {
-                    Name = a.Name,
-                    CategoryName = a.AmenityCategory.Name,
-                    Longitude = a.Location.Y,
-                    Latitude = a.Location.X
-                })
-                .ToArrayAsync();
+            var model = await _unitOfWork.PropertyRepository.GetPropertyById(request.id);
 
             return model;
+           
         }
     }
 }

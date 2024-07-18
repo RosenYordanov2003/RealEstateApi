@@ -18,7 +18,6 @@
         public async Task AddAsync(T entity)
         {
             await _dbContext.AddAsync(entity);
-            //await SaveAsync();
         }
 
         public async Task DeleteAsync(T entity)
@@ -63,7 +62,6 @@
         public async Task UpdateAsync(T entity)
         {
             _dbSet.Update(entity);
-            //await SaveAsync();
         }
     }
 }

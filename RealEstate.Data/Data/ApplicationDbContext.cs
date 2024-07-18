@@ -17,6 +17,7 @@
         public DbSet<UserFavoriteProperties> UsersFavoriteProperties { get; set; }
         public DbSet<PropertyCategory> PropertyCategories { get; set; }
         public DbSet<City> Cities { get; set; }
+        public DbSet<Amenity> Amenities { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

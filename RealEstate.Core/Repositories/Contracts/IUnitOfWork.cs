@@ -4,5 +4,6 @@
     {
         Task SaveChangesAsync();
         IGenericRepository<T> Repository<T>() where T : class;
+        IPropertyRepository PropertyRepository { get; }
     }
 }

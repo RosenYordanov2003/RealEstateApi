@@ -16,7 +16,7 @@
     using Data.Repositories;
     using Core.Contracts;
     using Core.Services;
-    using RealEstate.SwaggerConfig;
+    using SwaggerConfig;
 
     public static class ServiceCollectionExtensions
     {
@@ -132,6 +132,7 @@
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IPropertyService, PropertyService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IPropertyRepository, PropertyRepository>();
             services.AddTransient<GlobalExceptionHandler>();
             services.AddVersioning();
             services.AddTransient<IConfigureOptions<SwaggerGenOptions>, SwaggerConfigOptions>();
