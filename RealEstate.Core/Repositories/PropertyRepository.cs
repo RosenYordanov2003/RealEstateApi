@@ -5,7 +5,8 @@
     using System.Threading.Tasks;
     using NetTopologySuite.Geometries;
     using NetTopologySuite;
-    using NetTopologySuite.Geometries.Utilities;
+    using ProjNet.CoordinateSystems.Transformations;
+    using ProjNet.CoordinateSystems;
     using Data.Models;
     using Core.Models.Property;
     using Data;
@@ -13,8 +14,6 @@
     using Core.Models.Pictures;
     using Core.Models.Amenities;
     using static GlobalConstants.ApplicationConstants;
-    using ProjNet.CoordinateSystems.Transformations;
-    using ProjNet.CoordinateSystems;
 
     public class PropertyRepository : GenericRepository<Property>, IPropertyRepository
     {
@@ -78,6 +77,5 @@
 
             return distance;
         }
-
     }
 }
