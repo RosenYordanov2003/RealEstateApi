@@ -5,13 +5,16 @@
     using System.Threading.Tasks;
     using NetTopologySuite.Geometries;
     using NetTopologySuite;
+    using NetTopologySuite.Geometries.Utilities;
     using Data.Models;
     using Core.Models.Property;
     using Data;
     using Contracts;
     using Core.Models.Pictures;
-    using static GlobalConstants.ApplicationConstants;
     using Core.Models.Amenities;
+    using static GlobalConstants.ApplicationConstants;
+    using ProjNet.CoordinateSystems.Transformations;
+    using ProjNet.CoordinateSystems;
 
     public class PropertyRepository : GenericRepository<Property>, IPropertyRepository
     {
@@ -49,14 +52,32 @@
                             Name = a.Name,
                             CategoryName = a.AmenityCategory.Name,
                             Longitude = a.Location.Y,
-                            Latitude = a.Location.X
+                            Latitude = a.Location.X,
+                            Distance = Math.Round(CalculateDistanceInMeters(p.Location, a.Location), 2)
                         })
                         .ToList()
-
                    })
                    .FirstAsync(p => p.Id == id);
 
             return model;
         }
+
+        //Static due to EF Exception
+        private static double CalculateDistanceInMeters(Point location1, Point location2)
+        {
+            var wgs84 = GeographicCoordinateSystem.WGS84;
+
+            var factory = new CoordinateTransformationFactory();
+            var wgs84ToUtm = factory.CreateFromCoordinateSystems(wgs84, ProjectedCoordinateSystem.WGS84_UTM(33, true));
+
+           
+            var utm1 = wgs84ToUtm.MathTransform.Transform(new[] { location1.X, location1.Y });
+            var utm2 = wgs84ToUtm.MathTransform.Transform(new[] { location2.X, location2.Y });
+
+            var distance = Math.Sqrt(Math.Pow(utm1[0] - utm2[0], 2) + Math.Pow(utm1[1] - utm2[1], 2));
+
+            return distance;
+        }
+
     }
 }
