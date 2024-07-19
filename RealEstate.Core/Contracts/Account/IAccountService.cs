@@ -1,4 +1,4 @@
-﻿namespace RealEstate.Core.Contracts
+﻿namespace RealEstate.Core.Contracts.Account
 {
     using Microsoft.IdentityModel.Tokens;
     using Data.Data.Models;

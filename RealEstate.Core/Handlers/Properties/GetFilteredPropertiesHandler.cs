@@ -71,7 +71,9 @@
                     Name = p.Name,
                     Price = p.Price,
                     BathRoomsCount = p.BathRoomsCount,
-                    BedRoomsCount = p.BedRoomsCount
+                    BedRoomsCount = p.BedRoomsCount,
+                    Category = p.PropertyCategory.Name,
+                    CategoryId = p.PropertyCategoryId,
                 })
                 .ToArrayAsync();
         }

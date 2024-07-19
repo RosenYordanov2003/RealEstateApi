@@ -14,9 +14,10 @@
     using Data.Data;
     using Data.Repositories.Contracts;
     using Data.Repositories;
-    using Core.Contracts;
     using Core.Services;
     using SwaggerConfig;
+    using Core.Contracts.Account;
+    using Core.Contracts.Email;
 
     public static class ServiceCollectionExtensions
     {
@@ -73,11 +74,6 @@
         {
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo
-                {
-                    Title = "JWTToken_Auth_API",
-                    Version = "v1"
-                });
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
                 {
                     Name = "Authorization",
@@ -130,13 +126,13 @@
         {
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IAccountService, AccountService>();
-            services.AddScoped<IPropertyService, PropertyService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IPropertyRepository, PropertyRepository>();
             services.AddTransient<GlobalExceptionHandler>();
             services.AddVersioning();
             services.AddTransient<IConfigureOptions<SwaggerGenOptions>, SwaggerConfigOptions>();
-            services.AddSwaggerGen();
+            services.AddScoped<IEmailSender, EmailSender>();
+            services.AddSwaggerConfiguration();
             services.AddMediatR(cfg =>
             {
                 cfg.RegisterServicesFromAssemblies(new Assembly[] { typeof(Program).Assembly, typeof(RealEstate.Core.Handlers.Properties.GetFilteredPropertiesHandler).Assembly});

@@ -7,6 +7,7 @@
         public PropertyCategory()
         {
             Properties = new List<Property>();
+            Subscriptions = new List<Subscription>();
         }
         [Key]
         public int Id { get; set; }
@@ -14,5 +15,6 @@
         [MaxLength(NAME_MAX_LENGTH)]
         public string Name { get; set; } = null!;
         public ICollection<Property> Properties { get; set; }
+        public ICollection<Subscription> Subscriptions { get; set; }
     }
 }

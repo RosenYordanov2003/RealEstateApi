@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NetTopologySuite.Geometries;
 using RealEstate.Data.Data;
@@ -12,9 +13,10 @@ using RealEstate.Data.Data;
 namespace RealEstate.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240718162446_addRelationBetweenUserAndSubscription")]
+    partial class addRelationBetweenUserAndSubscription
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -491,6 +493,61 @@ namespace RealEstate.Data.Migrations
                     b.ToTable("Subscriptions");
                 });
 
+            modelBuilder.Entity("RealEstate.Data.Data.Models.SubscriptionCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SubscriptionCategories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "House"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Тhree-bedroom apartment"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Тwo-bedroom apartment"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Four-bedroom apartment"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Four-bedroom apartment"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Name = "Villa"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Name = "Maisonette"
+                        });
+                });
+
             modelBuilder.Entity("RealEstate.Data.Data.Models.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -561,15 +618,15 @@ namespace RealEstate.Data.Migrations
                         {
                             Id = new Guid("e7d6ee68-2a6d-4a1a-b640-b26fceb74254"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "fc4a885e-54a4-424c-96fe-887cc8fb12e0",
+                            ConcurrencyStamp = "7b27008d-350b-4843-af07-be921ec32578",
                             Email = "bobi123@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "BOBI123@GMAIL.COM",
                             NormalizedUserName = "BOBI",
-                            PasswordHash = "AQAAAAEAACcQAAAAEDveX8LZp/thXnZinjj1GSiCdNnVoLc0gfb33Q8P5nVcDOluTKFrbcoh3KGMdpND/Q==",
+                            PasswordHash = "AQAAAAEAACcQAAAAELbZLCL+0zF/OD+es4ybGLWUWukNYRP/zRKmAYD1UG5kaJJZr70YSCqISjn+DNKUyQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "b29f8b53-8e9c-4c01-bd62-8a0bd8b7a162",
+                            SecurityStamp = "f7b25ed5-7548-4f2d-a143-f0bf095c9bc0",
                             TwoFactorEnabled = false,
                             UserName = "Bobi"
                         });
@@ -719,7 +776,7 @@ namespace RealEstate.Data.Migrations
 
             modelBuilder.Entity("RealEstate.Data.Data.Models.Subscription", b =>
                 {
-                    b.HasOne("RealEstate.Data.Data.Models.PropertyCategory", "Category")
+                    b.HasOne("RealEstate.Data.Data.Models.SubscriptionCategory", "Category")
                         .WithMany("Subscriptions")
                         .HasForeignKey("SubscriptionCategoryId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -777,13 +834,16 @@ namespace RealEstate.Data.Migrations
             modelBuilder.Entity("RealEstate.Data.Data.Models.PropertyCategory", b =>
                 {
                     b.Navigation("Properties");
-
-                    b.Navigation("Subscriptions");
                 });
 
             modelBuilder.Entity("RealEstate.Data.Data.Models.SaleCategory", b =>
                 {
                     b.Navigation("Properties");
+                });
+
+            modelBuilder.Entity("RealEstate.Data.Data.Models.SubscriptionCategory", b =>
+                {
+                    b.Navigation("Subscriptions");
                 });
 
             modelBuilder.Entity("RealEstate.Data.Data.Models.User", b =>

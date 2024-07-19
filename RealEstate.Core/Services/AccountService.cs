@@ -4,9 +4,9 @@
     using System.Security.Claims;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.IdentityModel.Tokens;
-    using Contracts;
     using Data.Data.Models;
     using static GlobalConstants.ApplicationConstants;
+    using RealEstate.Core.Contracts.Account;
 
     public class AccountService : IAccountService
     {

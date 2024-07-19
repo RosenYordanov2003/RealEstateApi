@@ -38,7 +38,9 @@
                     ImgUrl = p.Pictures == null ? null : p.Pictures.First().ImgUrl,
                     Name = p.Name,
                     Price = p.Price,
-                    SquareMeters = p.SquareMeters
+                    SquareMeters = p.SquareMeters,
+                    Category = p.PropertyCategory.Name,
+                    CategoryId = p.PropertyCategory.Id
                 })
                 .ToArrayAsync();
         }

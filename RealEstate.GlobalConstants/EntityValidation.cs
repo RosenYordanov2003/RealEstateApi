@@ -29,5 +29,13 @@
             public const int BATHROOM_MIN_VALUE = 1;
             public const int BATHROOM_MAX_VALUE = 20;
         }
+        public static class AmenityValidation
+        {
+            public const int NAME_MAX_LENGTH = 40;
+        }
+        public static class SubscriptionValidation
+        {
+            public const int NAME_MAX_LENGTH = 40;
+        }
     }
 }

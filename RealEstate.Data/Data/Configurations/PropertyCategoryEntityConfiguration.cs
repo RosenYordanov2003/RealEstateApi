@@ -11,6 +11,10 @@
                .WithOne(p => p.PropertyCategory)
                .OnDelete(DeleteBehavior.NoAction);
             builder.HasData(SeedCategories());
+
+            builder.HasMany(c => c.Subscriptions)
+                .WithOne(s => s.Category)
+                .OnDelete(DeleteBehavior.NoAction);
         }
         private IEnumerable<PropertyCategory> SeedCategories()
         {

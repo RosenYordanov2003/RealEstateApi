@@ -8,6 +8,7 @@
     using Data.Data.Models;
     using Core.Models.Account;
     using Core.Contracts;
+    using RealEstate.Core.Contracts.Account;
 
     [Route("api/account")]
     [ApiController]

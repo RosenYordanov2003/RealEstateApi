@@ -8,7 +8,7 @@
     using Core.Queries.Users;
     using Extensions;
     using Responses.Properties;
-    using Core.Queries.Subscription;
+    using Core.Commands.Subscription;
 
     [Route("api/subscription")]
     [ApiController]
@@ -37,7 +37,11 @@
             }
             Guid userId = await _mediator.Send(new GetUserIdQuery(username));
 
-            await _mediator.Send(new CreateSubscriptionQuery(model, userId));
+            await _mediator.Send(new CreateSubscriptionCommand(model, userId));
+
+            var userEmails = await _mediator.Send(new GetUserEmailsQuery("Four-bedroom apartment"));
+
+            await _mediator.Send(new SendUsersEmailQuery(userEmails));
 
             return Ok();
         }

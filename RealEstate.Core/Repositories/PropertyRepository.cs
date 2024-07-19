@@ -43,6 +43,8 @@
                        Name = p.Name,
                        Price = p.Price,
                        SquareMeters = p.SquareMeters,
+                       Category = p.PropertyCategory.Name,
+                       CategoryId = p.PropertyCategory.Id,
                        Pictures = p.Pictures.Select(p => new PictureModel() { Id = p.Id, ImgUrl = p.ImgUrl }).ToArray(),
                        Amenities = _context.Amenities
                         .Where(a => a.Location.IsWithinDistance(p.Location, DISTANCE_IN_METERS))

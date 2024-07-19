@@ -18,6 +18,7 @@
         public DbSet<PropertyCategory> PropertyCategories { get; set; }
         public DbSet<City> Cities { get; set; }
         public DbSet<Amenity> Amenities { get; set; }
+        public DbSet<Subscription> Subscriptions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

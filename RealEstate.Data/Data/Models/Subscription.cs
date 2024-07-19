@@ -9,6 +9,6 @@
         public User User { get; set; } = null!;
         [ForeignKey(nameof(Category))]
         public int SubscriptionCategoryId { get; set; }
-        public SubscriptionCategory Category { get; set; } = null!;
+        public PropertyCategory Category { get; set; } = null!;
     }
 }

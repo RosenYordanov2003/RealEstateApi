@@ -259,6 +259,11 @@
                 await _mediator.Send(new CreatePictureCommand(_webHostEnvironment.WebRootPath, file, id));
             }
             PropertyDetailsModel detailsModel = await _mediator.Send(new GetPropertyByIdQuery(id));
+
+            IEnumerable<string> emails = await _mediator.Send(new GetUserEmailsQuery(model.PropertyCategoryId));
+
+            await _mediator.Send(new SendUsersEmailQuery(emails));
+
             return CreatedAtRoute("details", new { Id = id }, detailsModel);
         }
 

@@ -27,7 +27,9 @@
                     ImgUrl = ufp.Property.Pictures.Select(x => x.ImgUrl).FirstOrDefault(),
                     Name = ufp.Property.Name,
                     Price = ufp.Property.Price,
-                    SquareMeters = ufp.Property.SquareMeters
+                    SquareMeters = ufp.Property.SquareMeters,
+                    Category = ufp.Property.PropertyCategory.Name,
+                    CategoryId = ufp.Property.PropertyCategory.Id,
                 })
                 .ToArrayAsync();
         }
