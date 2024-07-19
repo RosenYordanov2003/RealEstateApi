@@ -22,30 +22,53 @@
         }
 
         [HttpPost]
-        [Route("create")]
+        [Route("subscribe")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Create([FromBody] SubscriptionModel model)
         {
-            string username = User.GetUserName();
-
-            if (string.IsNullOrWhiteSpace(username))
+            if (string.IsNullOrWhiteSpace(User.GetUserName()))
             {
                 return NotFound(new PropertyBaseResponseModel(false, "User does not exist"));
             }
 
-            Guid userId = await _mediator.Send(new GetUserIdQuery(username));
+            Guid userId = await _mediator.Send(new GetUserIdQuery(User.GetUserName()));
 
             if (await _mediator.Send(new CheckIfUserAlreadyHasSubscriptionQuery(userId, model.SubscriptionCategory)))
             {
-                return BadRequest(new PropertyBaseResponseModel(false, "User already has a subscription for this category"));    
+                return BadRequest(new PropertyBaseResponseModel(false, "User already has a subscription for this category"));
             }
 
             await _mediator.Send(new CreateSubscriptionCommand(model, userId));
 
             return Ok();
+        }
+
+        [HttpDelete]
+        [Route("unsubscribe")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Unsubscribe([FromBody] SubscriptionModel model)
+        {
+            if (string.IsNullOrWhiteSpace(User.GetUserName()))
+            {
+                return NotFound(new PropertyBaseResponseModel(false, "User does not exist"));
+            }
+
+            Guid userId = await _mediator.Send(new GetUserIdQuery(User.GetUserName()));
+
+            if (!await _mediator.Send(new CheckIfUserAlreadyHasSubscriptionQuery(userId, model.SubscriptionCategory)))
+            {
+                return BadRequest(new PropertyBaseResponseModel(false, "User doesn't have a subscription for this category"));
+            }
+
+            await _mediator.Send(new RemoveSubscriptionCommand(userId, model.SubscriptionCategory));
+
+            return Ok(new PropertyBaseResponseModel(true, null));
         }
     }
 }
