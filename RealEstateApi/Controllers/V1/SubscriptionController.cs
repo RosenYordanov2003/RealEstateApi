@@ -35,13 +35,15 @@
             {
                 return NotFound(new PropertyBaseResponseModel(false, "User does not exist"));
             }
+
             Guid userId = await _mediator.Send(new GetUserIdQuery(username));
 
+            if (await _mediator.Send(new CheckIfUserAlreadyHasSubscriptionQuery(userId, model.SubscriptionCategory)))
+            {
+                return BadRequest(new PropertyBaseResponseModel(false, "User already has a subscription for this category"));    
+            }
+
             await _mediator.Send(new CreateSubscriptionCommand(model, userId));
-
-            var userEmails = await _mediator.Send(new GetUserEmailsQuery("Four-bedroom apartment"));
-
-            await _mediator.Send(new SendUsersEmailQuery(userEmails));
 
             return Ok();
         }
