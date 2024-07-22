@@ -7,8 +7,8 @@
     using Responses.Account;
     using Data.Data.Models;
     using Core.Models.Account;
-    using Core.Contracts;
-    using RealEstate.Core.Contracts.Account;
+    using Core.Contracts.Account;
+    using Core.Contracts.Email;
 
     [Route("api/account")]
     [ApiController]
@@ -17,12 +17,14 @@
         private IConfiguration _config;
         private UserManager<User> _userManager;
         private IAccountService _accountService;
-        public AccountController(IConfiguration config, UserManager<User> userManager, 
-            IAccountService accountService)
+        private IEmailSender _emailSender;
+        public AccountController(IConfiguration config, UserManager<User> userManager,
+            IAccountService accountService, IEmailSender emailSender)
         {
             _config = config;
             _userManager = userManager;
             _accountService = accountService;
+            _emailSender = emailSender;
         }
         [HttpPost]
         [Route("register")]
@@ -56,8 +58,35 @@
                 var errors = result.Errors.Select(e => e.Description);
                 return BadRequest(new RegisterResponseModel(false, string.Join(" ", errors)));
             }
+            await SendEmailToken(user);
+
             return Ok(new RegisterResponseModel(true));
         }
+
+
+        [HttpGet]
+        [Route("confirmEmail")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+
+        public async Task<IActionResult> ConfirmEmail(string emailToken, string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var result = await _userManager.ConfirmEmailAsync(user, emailToken);
+            if (!result.Succeeded)
+            {
+                return BadRequest();
+            }
+
+            return Ok();
+        }
+
         [HttpPost]
         [Route("login")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -68,21 +97,36 @@
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
             User user = await _userManager.FindByNameAsync(model.Username);
-            if(user == null)
+            if (user == null)
             {
                 return NotFound(new LoginResponseModel(false, null, "Incorrect username or password"));
             }
-            if(!await _userManager.CheckPasswordAsync(user, model.Password))
+            if (!await _userManager.CheckPasswordAsync(user, model.Password))
             {
                 return BadRequest(new LoginResponseModel(false, null, "Incorrect username or password"));
             }
+            bool isEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
+            if (!isEmailConfirmed)
+            {
+                await SendEmailToken(user);
+
+                return BadRequest("Email is unconfirmed, please confirm it first");
+            }
+
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var issuer = _config.GetSection("Jwt:ValidIssuer").Get<string>();
             var audience = _config.GetSection("Jwt:ValidAudience").Get<string>();
 
-            var token = await  _accountService.GenerateJwtTokenAsync(user, securityKey, issuer, audience);
+            var token = await _accountService.GenerateJwtTokenAsync(user, securityKey, issuer, audience);
 
             return Ok(new LoginResponseModel(true, token));
+        }
+
+        private async Task SendEmailToken(User user)
+        {
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            string confirmationLink = Url.Action("ConfirmEmail", "Account", new { emailToken = token, email = user.Email }, Request.Scheme);
+            await _emailSender.SendEmailAsync(user.Email, "Confirm your email", confirmationLink);
         }
     }
 }
