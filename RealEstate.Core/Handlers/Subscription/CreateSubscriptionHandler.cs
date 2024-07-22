@@ -19,7 +19,7 @@ namespace RealEstate.Core.Handlers.Subscription
         {
             Subscription subscription = new Subscription()
             {
-                SubscriptionCategoryId = request.model.SubscriptionCategory,
+                SubscriptionCategoryId = request.model.SubscriptionCategoryId,
                 UserId = request.userId
             };
 

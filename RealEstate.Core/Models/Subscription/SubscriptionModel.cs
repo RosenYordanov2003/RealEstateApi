@@ -2,6 +2,6 @@
 {
     public class SubscriptionModel
     {
-        public int SubscriptionCategory { get; set; }
+        public int SubscriptionCategoryId { get; set; }
     }
 }

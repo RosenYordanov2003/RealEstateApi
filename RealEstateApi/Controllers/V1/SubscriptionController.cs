@@ -36,7 +36,7 @@
 
             Guid userId = await _mediator.Send(new GetUserIdQuery(User.GetUserName()));
 
-            if (await _mediator.Send(new CheckIfUserAlreadyHasSubscriptionQuery(userId, model.SubscriptionCategory)))
+            if (await _mediator.Send(new CheckIfUserAlreadyHasSubscriptionQuery(userId, model.SubscriptionCategoryId)))
             {
                 return BadRequest(new PropertyBaseResponseModel(false, "User already has a subscription for this category"));
             }
@@ -61,12 +61,12 @@
 
             Guid userId = await _mediator.Send(new GetUserIdQuery(User.GetUserName()));
 
-            if (!await _mediator.Send(new CheckIfUserAlreadyHasSubscriptionQuery(userId, model.SubscriptionCategory)))
+            if (!await _mediator.Send(new CheckIfUserAlreadyHasSubscriptionQuery(userId, model.SubscriptionCategoryId)))
             {
                 return BadRequest(new PropertyBaseResponseModel(false, "User doesn't have a subscription for this category"));
             }
 
-            await _mediator.Send(new RemoveSubscriptionCommand(userId, model.SubscriptionCategory));
+            await _mediator.Send(new RemoveSubscriptionCommand(userId, model.SubscriptionCategoryId));
 
             return Ok(new PropertyBaseResponseModel(true, null));
         }
