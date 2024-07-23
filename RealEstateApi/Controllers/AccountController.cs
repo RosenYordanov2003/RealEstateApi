@@ -147,6 +147,27 @@
             return Ok();
         }
 
+        [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Route("disable2FA")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+
+        public async Task<IActionResult> Disable2FA()
+        {
+            string userName = User.GetUserName();
+            if (string.IsNullOrWhiteSpace(userName))
+            {
+                return BadRequest();
+            }
+
+            await _mediator.Send(new DisableUser2FACommand(userName));
+
+            return Ok();
+        }
+
         private async Task SendEmailToken(User user)
         {
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
