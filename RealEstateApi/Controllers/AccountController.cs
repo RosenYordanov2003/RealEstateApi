@@ -15,6 +15,7 @@
     using Extensions;
     using Core.Commands.Users;
     using Responses;
+    using static GlobalConstants.ApplicationConstants;
 
     [Route("api/account")]
     [ApiController]
@@ -124,7 +125,7 @@
                 await _signInManager.SignOutAsync();
                 await _signInManager.PasswordSignInAsync(user, model.Password, false, true);
 
-                string twoFaToken = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
+                string twoFaToken = await _userManager.GenerateTwoFactorTokenAsync(user, TWO_FACTOR_TOKEN_PROVIDER);
                 await _emailSender.SendEmailAsync(user.Email, "Your 2FA Token", $"<h1>{twoFaToken}</h1>");
 
                 return Ok(new BaseResponse($"We have sent an OTP to your Email {user.Email}", true));
@@ -148,7 +149,7 @@
                 return NotFound(new LoginResponseModel(false, null, "Incorrect username or password"));
             }
 
-            var signIn = await _signInManager.TwoFactorSignInAsync("Email", model.Code, false, false);
+            var signIn = await _signInManager.TwoFactorSignInAsync(TWO_FACTOR_TOKEN_PROVIDER, model.Code, false, false);
             if (signIn.Succeeded)
             {
                 string token = await GenerateJwtTokenAsync(user);
