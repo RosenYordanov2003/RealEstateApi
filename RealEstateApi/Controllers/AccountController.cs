@@ -118,7 +118,7 @@
             if (!await _userManager.IsEmailConfirmedAsync(user))
             {
                 await SendConfirmEmailToken(user);
-                return Ok(new BaseResponse("Email is unconfirmed, please confirm it first", true));
+                return Ok(new BaseResponseModel("Email is unconfirmed, please confirm it first", true));
             }
             if (user.TwoFactorEnabled)
             {
@@ -128,7 +128,7 @@
                 string twoFaToken = await _userManager.GenerateTwoFactorTokenAsync(user, TWO_FACTOR_TOKEN_PROVIDER);
                 await _emailSender.SendEmailAsync(user.Email, "Your 2FA Token", $"<h1>{twoFaToken}</h1>");
 
-                return Ok(new BaseResponse($"We have sent an OTP to your Email {user.Email}", true));
+                return Ok(new BaseResponseModel($"We have sent an OTP to your Email {user.Email}", true));
             }
 
             string token = await GenerateJwtTokenAsync(user);
@@ -155,7 +155,7 @@
                 string token = await GenerateJwtTokenAsync(user);
                 return Ok(new LoginResponseModel(true, token));
             }
-            return BadRequest(new BaseResponse("Invalid code", false));
+            return BadRequest(new BaseResponseModel("Invalid code", false));
         }
 
 
@@ -200,10 +200,79 @@
             return Ok();
         }
 
+        [HttpPost]
+        [Route("forgot-password")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+
+        public async Task<IActionResult> ForgotPassword([FromBody] string email)
+        {
+            User user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return BadRequest(new BaseResponseModel("user does not exist", false));
+            }
+
+            string token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            string forgotPasswordLink = Url.Action(nameof(ResetPassword), "Account", new {token, email}, Request.Scheme)!;
+
+            await _emailSender.SendEmailAsync(user.Email, "Forgot Password Link", forgotPasswordLink);
+
+            return Ok(new BaseResponseModel($"Password change request is sent on Email {email}", true));
+        }
+        [HttpGet]
+        [Route("reset-password")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        
+        public async Task<IActionResult> ResetPassword(string token, string email)
+        {
+            User user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return BadRequest(new BaseResponseModel("user does not exist", false));
+            }
+
+            ResetPasswordModel model = new ResetPasswordModel
+            {
+                Email = email,
+                Token = token
+            };
+
+            return Ok(model);
+        }
+
+        [HttpPost]
+        [Route("reset-password")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+
+        public async Task<IActionResult> ResetPassword([FromBody]ResetPasswordModel model)
+        {
+            User user = await _userManager.FindByEmailAsync(model.Email);
+            
+            var resetPasswordResult = await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
+
+            if (resetPasswordResult.Succeeded)
+            {
+                return Ok(new BaseResponseModel("You have Successfully changed your password", true));
+            }
+            foreach (var result in resetPasswordResult.Errors)
+            {
+                ModelState.AddModelError(result.Code, result.Description);
+            }
+
+            IEnumerable<string> errors = ModelState.Values.SelectMany(v => v.Errors).Select(x => x.ErrorMessage);
+            return Ok(new BaseResponseModel(string.Join(" ", errors), false));
+        }
+
         private async Task SendConfirmEmailToken(User user)
         {
             string token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            string confirmationLink = Url.Action("ConfirmEmail", "Account", new { emailToken = token, email = user.Email }, Request.Scheme);
+            string confirmationLink = Url.Action(nameof(ConfirmEmail), "Account", new { emailToken = token, email = user.Email }, Request.Scheme)!;
             await _emailSender.SendEmailAsync(user.Email, "Confirm your email", confirmationLink);
         }
         private async Task<string> GenerateJwtTokenAsync(User user)
