@@ -3,12 +3,17 @@
     using System.Text;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.IdentityModel.Tokens;
+    using Microsoft.AspNetCore.Authorization;
     using Responses.Account;
     using Data.Data.Models;
     using Core.Models.Account;
     using Core.Contracts.Account;
     using Core.Contracts.Email;
+    using Extensions;
+    using Core.Commands.Users;
+    using MediatR;
 
     [Route("api/account")]
     [ApiController]
@@ -18,13 +23,15 @@
         private UserManager<User> _userManager;
         private IAccountService _accountService;
         private IEmailSender _emailSender;
+        private IMediator _mediator;
         public AccountController(IConfiguration config, UserManager<User> userManager,
-            IAccountService accountService, IEmailSender emailSender)
+            IAccountService accountService, IEmailSender emailSender, IMediator mediator)
         {
             _config = config;
             _userManager = userManager;
             _accountService = accountService;
             _emailSender = emailSender;
+            _mediator = mediator;
         }
         [HttpPost]
         [Route("register")]
@@ -89,7 +96,6 @@
 
         [HttpPost]
         [Route("login")]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -120,6 +126,25 @@
             var token = await _accountService.GenerateJwtTokenAsync(user, securityKey, issuer, audience);
 
             return Ok(new LoginResponseModel(true, token));
+        }
+        [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Route("enable2FA")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> EnableTwoFa()
+        {
+            string userName = User.GetUserName();
+            if (string.IsNullOrWhiteSpace(userName))
+            {
+                return BadRequest();
+            }
+
+            await _mediator.Send(new EnableUser2FACommand(userName));
+
+            return Ok();
         }
 
         private async Task SendEmailToken(User user)
