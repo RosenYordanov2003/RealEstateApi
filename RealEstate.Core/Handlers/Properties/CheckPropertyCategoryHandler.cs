@@ -17,11 +17,10 @@
         public async Task<bool> Handle(CheckPropertyCategoryQuery request, CancellationToken cancellationToken)
         {
             Property property = await _unitOfWork.Repository<Property>().GetByAsync(p => p.Id == request.propertyId)
+                 .AsNoTracking()
                  .FirstAsync();
 
-            bool result = property.SaleCategoryId == 3 ? false : true;
-
-            return result;
+            return property.SaleCategoryId == request.category;
         }
     }
 }
