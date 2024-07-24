@@ -241,7 +241,7 @@
                 Token = token
             };
 
-            return Ok(model);
+            return Ok(new ResetPasswordResponseModel(model, "", true));
         }
 
         [HttpPost]
