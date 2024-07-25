@@ -5,6 +5,5 @@
     {
         public IFormFile File { get; set; } = null!;
         public Guid PropertyId { get; set; }
-        public Guid UserId { get; set; }
     }
 }
