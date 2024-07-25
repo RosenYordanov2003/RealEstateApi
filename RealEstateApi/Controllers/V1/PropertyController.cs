@@ -14,6 +14,7 @@
     using Core.Commands.Pictures;
 
     [ApiVersion("1.0")]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [Route("api/v{version:apiversion}/properties")]
     [ApiController]
     public class PropertyController : ControllerBase
@@ -28,7 +29,6 @@
         [HttpGet("{Id}", Name = "details")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
 
         public async Task<IActionResult> GetProperty(Guid Id)
         {
@@ -44,7 +44,6 @@
         [HttpGet("user{userId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetUserProeprties([FromRoute] Guid userId)
         {
             bool result = await _mediator.Send(new CheckIfUserExistsByIdQuery(userId));
@@ -60,7 +59,6 @@
         [Route("addToFavorite")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
 
         public async Task<IActionResult> AddPropertyToUserFavortie([FromQuery] Guid userId, [FromQuery] Guid propertyId)
         {
@@ -82,7 +80,6 @@
         [Route("userFavorite {userId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
 
         public async Task<IActionResult> GetUserFavoriteProperties([FromRoute] Guid userId)
         {
@@ -99,7 +96,6 @@
         [Route("removeFromFavorite")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
 
         public async Task<IActionResult> RemoveFromUserFavorite(Guid userId, Guid propertyId)
         {
@@ -124,7 +120,6 @@
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
 
         public async Task<IActionResult> DeleteProperty([FromRoute] Guid propertyId)
         {
@@ -152,7 +147,6 @@
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> RecoverProperty([FromRoute] Guid propertyId)
         {
             bool isPropertyExists = await _mediator.Send(new CheckIfPropertyExistsQuery(propertyId));
@@ -179,7 +173,6 @@
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Rent([FromBody] BookPropertyModel model)
         {
             bool isPropertyExists = await _mediator.Send(new CheckIfPropertyExistsQuery(model.Id));
@@ -188,7 +181,9 @@
                 return NotFound(new PropertyBaseResponseModel(false, "Property does not exist"));
             }
 
-            bool propertyCategoryIsForRent = await _mediator.Send(new CheckPropertyCategoryQuery(model.Id));
+            const int airbnbCategory = 1;
+
+            bool propertyCategoryIsForRent = await _mediator.Send(new CheckPropertyCategoryQuery(model.Id, airbnbCategory));
             if (!propertyCategoryIsForRent)
             {
                 return BadRequest(new PropertyBaseResponseModel(false, "Property is not for rent"));
@@ -212,7 +207,6 @@
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Edit([FromBody] EditPropertyModel model, [FromQuery] Guid id)
         {
             bool isPropertyExists = await _mediator.Send(new CheckIfPropertyExistsQuery(id));
@@ -239,7 +233,6 @@
         [Route("create")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 
         public async Task<IActionResult> Create([FromForm] CreatePropertyModel model)
@@ -270,13 +263,42 @@
         [HttpGet]
         [Route("nearby20km")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
 
         public async Task<IActionResult> GetPropertiesNearby5Km([FromQuery] double latitude, [FromQuery] double longitude)
         {
             var properties = await _mediator.Send(new GetPropertiesNearby5KmQuery(latitude, longitude));
 
             return Ok(properties);
+        }
+
+        [HttpPost]
+        [Route("buy")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+
+        public async Task<IActionResult> BuyProperty([FromBody] Guid propertyId)
+        {
+            Guid userId = await _mediator.Send(new GetUserIdQuery(User.GetUserName()));
+
+            if (!await _mediator.Send(new CheckIfPropertyExistsQuery(propertyId)))
+            {
+                return NotFound(new PropertyBaseResponseModel(false, "Property does not exist"));
+            }
+
+            const int saleCategoryId = 2;
+            if (!await _mediator.Send(new CheckPropertyCategoryQuery(propertyId, saleCategoryId)))
+            {
+                return BadRequest(new PropertyBaseResponseModel(false, "Property is not from sale category"));
+            }
+            if (await _mediator.Send(new CheckIfPropertyIsAlreadyOwnedByUserQuery(propertyId, userId)))
+            {
+                return BadRequest(new PropertyBaseResponseModel(false, "User already owns this property"));
+            }
+            await _mediator.Send(new BuyPropertyCommand(propertyId, userId));
+
+            return Ok(new PropertyBaseResponseModel(true, ""));
         }
     }
 }

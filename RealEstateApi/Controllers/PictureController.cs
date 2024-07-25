@@ -12,6 +12,7 @@
     using Core.Queries.Users;
     using Extensions;
     using Responses.Pictures;
+    using CsvHelper.Configuration.Attributes;
 
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -31,7 +32,7 @@
 
         [HttpPost]
         [Route("upload-property")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UploadPropertyImg([FromForm] UploadPropertyPictureModel model)
@@ -47,12 +48,12 @@
             {
                 return BadRequest(new BaseResponseModel("User isn't owning that property", false));
             }
-            await _mediator.Send(new CreatePictureCommand(_webHostEnvironment.WebRootPath, model.File, model.PropertyId));
+            PictureModel pictureModel = await _mediator.Send(new CreatePictureCommand(_webHostEnvironment.WebRootPath, model.File, model.PropertyId));
 
-            return Ok();
+            return CreatedAtRoute(nameof(GetById), new {id = pictureModel.Id}, pictureModel);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = nameof(GetById))]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

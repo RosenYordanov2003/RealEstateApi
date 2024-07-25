@@ -4,9 +4,10 @@
     using Core.Commands.Pictures;
     using Data.Repositories.Contracts;
     using System.IO;
-    using RealEstate.Data.Data.Models;
+    using Data.Data.Models;
+    using Core.Models.Pictures;
 
-    public class CreatePictureHandler : IRequestHandler<CreatePictureCommand>
+    public class CreatePictureHandler : IRequestHandler<CreatePictureCommand, PictureModel>
     {
         private readonly IUnitOfWork _unitOfWork;
 
@@ -15,7 +16,7 @@
             _unitOfWork = unitOfWork;
         }
 
-        public async Task Handle(CreatePictureCommand request, CancellationToken cancellationToken)
+        public async Task<PictureModel> Handle(CreatePictureCommand request, CancellationToken cancellationToken)
         {
             string fileName = string.Format($"{request.propertyId}_{request.file.FileName}");
             string filePath = Path.Combine(request.path, fileName);
@@ -32,6 +33,8 @@
 
             await _unitOfWork.Repository<Picture>().AddAsync(picture);
             await _unitOfWork.SaveChangesAsync();
+
+            return new PictureModel() { Id = picture.Id, ImgUrl = picture.ImgUrl };
         }
     }
 }

@@ -1,8 +1,8 @@
 ﻿namespace RealEstate.Responses
 {
-    public class BaseResponse
+    public class BaseResponseModel
     {
-        public BaseResponse(string message, bool success)
+        public BaseResponseModel(string message, bool success)
         {
             Message = message; 
             Success = success;

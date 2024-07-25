@@ -183,7 +183,9 @@
                 return NotFound(new PropertyBaseResponseModel(false, "Property does not exist"));
             }
 
-            bool propertyCategoryIsForRent = await _mediator.Send(new CheckPropertyCategoryQuery(model.Id));
+            const int airbnbCategoryId = 1;
+
+            bool propertyCategoryIsForRent = await _mediator.Send(new CheckPropertyCategoryQuery(model.Id, airbnbCategoryId));
             if (!propertyCategoryIsForRent)
             {
                 return BadRequest(new PropertyBaseResponseModel(false, "Property is not for rent"));
