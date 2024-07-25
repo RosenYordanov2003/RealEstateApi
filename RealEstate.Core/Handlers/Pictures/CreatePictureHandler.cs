@@ -1,11 +1,11 @@
 ﻿namespace RealEstate.Core.Handlers.Pictures
 {
+    using System.IO;
     using MediatR;
     using Core.Commands.Pictures;
     using Data.Repositories.Contracts;
-    using System.IO;
+    using Models.Pictures;
     using Data.Data.Models;
-    using Core.Models.Pictures;
 
     public class CreatePictureHandler : IRequestHandler<CreatePictureCommand, PictureModel>
     {
