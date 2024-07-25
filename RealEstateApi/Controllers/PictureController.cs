@@ -68,5 +68,41 @@
 
             return Ok(new PictureResponseModel("", true, model));
         }
+
+        [HttpDelete]
+        [Route("remove-proeprty")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+
+        public async Task<IActionResult> RemovePropertyImg([FromBody] DeletePropertyPictureModel model)
+        {
+            if (!await _mediator.Send(new CheckIfPropertyExistsQuery(model.PropertyId)))
+            {
+                return NotFound(new BaseResponseModel("property does not exist", false));
+            }
+            if (!await _mediator.Send(new CheckIfPictureExistsByIdQuery(model.PictureId)))
+            {
+                return NotFound(new BaseResponseModel("Picture does not exist", false));
+            }
+
+            Guid userId = await _mediator.Send(new GetUserIdQuery(User.GetUserName()));
+
+            if (!await _mediator.Send(new CheckIfPropertyIsAlreadyOwnedByUserQuery(model.PropertyId, userId)))
+            {
+                return BadRequest(new BaseResponseModel("User isn't owning that property", false));
+            }
+
+            PictureModel pictureModel = await _mediator.Send(new GetPictureByIdQuery(model.PictureId));
+
+            string imgFileName = pictureModel.ImgUrl.Split("/", StringSplitOptions.RemoveEmptyEntries).Last();
+
+            string webRoothPath = _webHostEnvironment.WebRootPath;
+
+            await _mediator.Send(new DeletePictureCommand(webRoothPath, pictureModel.Id, imgFileName));
+
+            return Ok(new BaseResponseModel("You have successfully deleted a picture", true));
+        }
+
     }
 }
