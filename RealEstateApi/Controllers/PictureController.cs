@@ -12,7 +12,6 @@
     using Core.Queries.Users;
     using Extensions;
     using Responses.Pictures;
-    using CsvHelper.Configuration.Attributes;
 
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]

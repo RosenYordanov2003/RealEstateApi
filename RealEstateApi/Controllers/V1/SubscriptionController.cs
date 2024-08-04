@@ -10,7 +10,7 @@
     using Responses.Properties;
     using Core.Commands.Subscription;
 
-    [Route("api/subscription")]
+    [Route("api/subscriptions")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class SubscriptionController : ControllerBase
@@ -22,7 +22,6 @@
         }
 
         [HttpPost]
-        [Route("subscribe")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -47,7 +46,6 @@
         }
 
         [HttpDelete]
-        [Route("unsubscribe")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
